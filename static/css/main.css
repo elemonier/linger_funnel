@@ -15,6 +15,14 @@ footer {
     padding-top: 0;
   }
 }
+.navbar-form {
+  display: none;
+}
+@media (min-width: 768px) {
+  .navbar-form {
+    display: block;
+  }
+}
 @media (min-width: 768px) {
   .navbar-brand {
     display: none;
@@ -55,7 +63,15 @@ footer {
 .navbar-default .navbar-nav > .active > a {
   background-color: #fff;
   background-image: none;
-  border-bottom: 5px solid #ddd;
   -webkit-box-shadow: none;
   box-shadow: none;
+}
+@media (min-width: 768px) {
+  .navbar-default .navbar-nav > .active > a {
+    background-color: #fff;
+    background-image: none;
+    border-bottom: 5px solid #ddd;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+  }
 }

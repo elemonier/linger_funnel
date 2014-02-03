@@ -20,6 +20,17 @@ footer {
 	}
 }
 
+.navbar-form {
+	display:none;
+}
+
+@media (min-width: 768px) {
+	.navbar-form {
+		display:block;
+	}
+}
+
+
 @media (min-width: 768px) {
 	.navbar-brand {
 		display:none;
@@ -58,20 +69,28 @@ footer {
 }
 
 .navbar-default .navbar-nav > li > a:hover {
-  background-image: -webkit-linear-gradient(top, #ebebeb 0%, #f3f3f3 100%);
-  background-image:         linear-gradient(to bottom, #ebebeb 0%, #f3f3f3 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffebebeb', endColorstr='#fff3f3f3', GradientType=0);
-  background-repeat: repeat-x;
-  -webkit-box-shadow: inset 0 3px 9px rgba(0, 0, 0, .075);
-          box-shadow: inset 0 3px 9px rgba(0, 0, 0, .075);
+	background-image: -webkit-linear-gradient(top, #ebebeb 0%, #f3f3f3 100%);
+	background-image:         linear-gradient(to bottom, #ebebeb 0%, #f3f3f3 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffebebeb', endColorstr='#fff3f3f3', GradientType=0);
+	background-repeat: repeat-x;
+	-webkit-box-shadow: inset 0 3px 9px rgba(0, 0, 0, .075);
+     box-shadow: inset 0 3px 9px rgba(0, 0, 0, .075);
 }
 
 .navbar-default .navbar-nav > .active > a {
-  background-color: #fff;
-  background-image: none;
-  border-bottom: 5px solid #ddd;
-  -webkit-box-shadow: none;
-  box-shadow: none;
+	background-color: #fff;
+	background-image: none;
+	-webkit-box-shadow: none;
+	 box-shadow: none;
 }
 
+@media (min-width: 768px) {
+	.navbar-default .navbar-nav > .active > a {
+		background-color: #fff;
+		background-image: none;
+		border-bottom: 5px solid #ddd;
+		-webkit-box-shadow: none;
+		 box-shadow: none;
+	}
+}
 
