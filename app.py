@@ -1,5 +1,4 @@
 from flask import Flask, jsonify, render_template
-import requests
 
 app = Flask(__name__)
 
@@ -7,8 +6,8 @@ app = Flask(__name__)
 app.config["DEBUG"] = True
 
 @app.route("/")
-def hello():
-	return "hello world!"
+def login():
+	return render_template("login.html")
 
 @app.route("/name")
 def name():
