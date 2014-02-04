@@ -23,6 +23,11 @@ def about():
 def signup():
 	return render_template("signup.html")
 
+@app.route("/contact")
+def contact():
+	return render_template("contact.html")
+
+# sample dynamic url route
 # @app.route("/search/<search_query>")
 # def search(search_query):
 # 	return search_query
