@@ -15,6 +15,14 @@ db = SQLAlchemy(app)
 def login():
 	return render_template("login.html")
 
+@app.route("/about")
+def about():
+	return render_template("about.html")
+
+@app.route("/signup")
+def signup():
+	return render_template("signup.html")
+
 # @app.route("/search/<search_query>")
 # def search(search_query):
 # 	return search_query
