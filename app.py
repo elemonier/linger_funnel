@@ -1,9 +1,13 @@
 from flask import Flask, jsonify, render_template
+from flask.ext.sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
 # disable this for launch (~~ 'watch')
-app.config["DEBUG"] = True
+app.debug = True
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://username:password@server/db'
+db = SQLAlchemy(app)
 
 @app.route("/")
 def login():
