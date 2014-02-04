@@ -21,45 +21,39 @@ module.exports = function(grunt) {
         optimization: 2
       },
       files: {
-        "static/css/main.css": "assets/private/css/source.less"
+        "static/css/main.css": "static/less/main.less"
       }
-    }
+    },
+    coffee: {
+      files: {
+        'static/js/main.js': 'static/coffee/main.coffee', // 1:1 compile
+      }
+    },
 
     watch: {
       styles: {
-        // Which files to watch (all .less files recursively in the less directory)
-        files: ['sites/all/themes/jiandan/less/**/*.less'],
-        tasks: ['less'],
         options: {
-          nospawn: true
-        }
-      }
-    }
-    watch: {
-      css: {
-        files: [
-          '**/*.sass',
-          '**/*.scss'
-        ],
-        tasks: ['compass']
+          spawn: false
+        },
+        files: [ "static/css/main.css", "static/less/main.less"],
+        tasks: [ "less" ]
       },
-      js: {
-        files: [
-          'static/js/*.js',
-          'Gruntfile.js'
-        ],
-        tasks: ['jshint']
+      coffee: {
+        files: ['static/coffee/main.coffee'],
+        tasks: ['coffee']
       }
     }
+
   });
 
   // Load the plugin that provides the "uglify" task.
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-less');
+  grunt.loadNpmTasks('grunt-contrib-coffee');
 
   // Default task(s).
-  grunt.registerTask('default', ['uglify', 'watch']);
+  grunt.registerTask('default', ['less', 'coffee', 'watch']);
 
 };
 
