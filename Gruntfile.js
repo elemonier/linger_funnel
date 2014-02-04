@@ -21,12 +21,12 @@ module.exports = function(grunt) {
         optimization: 2
       },
       files: {
-        "static/css/main.css": "static/less/main.less"
+        "static/css/main.css": "less/main.less"
       }
     },
     coffee: {
       files: {
-        'static/js/main.js': 'static/coffee/main.coffee', // 1:1 compile
+        'static/js/main.js': 'coffee/main.coffee', // 1:1 compile
       }
     },
 
@@ -35,11 +35,11 @@ module.exports = function(grunt) {
         options: {
           spawn: false
         },
-        files: [ "static/css/main.css", "static/less/main.less"],
+        files: [ "static/css/main.css", "less/main.less"],
         tasks: [ "less" ]
       },
       coffee: {
-        files: ['static/coffee/main.coffee'],
+        files: ['coffee/main.coffee'],
         tasks: ['coffee']
       }
     }
