@@ -42,6 +42,9 @@ footer {
 .widen {
   width: 100%;
 }
+.widen-50 {
+  width: 50%;
+}
 .navbar {
   border-bottom: 1px solid #ddd;
 }
