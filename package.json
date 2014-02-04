@@ -1,0 +1,19 @@
+{
+  "name": "linger.io",
+  "description" : "A mobile emergency backup and retrieval solution",
+  "version": "0.1.0",
+  "author": "William Falk-Wallace <wfalkwallace@gmail.com> (http://www.falk-wallace.com/)",
+  "contributors": [ ],
+  "repository" : {
+  	"type" : "git",
+  	"url" : "https://github.com/wfalkwallace/linger.git"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-contrib-jshint": "~0.6.3",
+    "grunt-contrib-nodeunit": "~0.2.0",
+    "grunt-contrib-uglify": "~0.2.2",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-contrib-compass": "~0.6.0"
+  }
+}
