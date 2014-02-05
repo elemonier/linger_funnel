@@ -7,11 +7,13 @@ footer {
 .navbar-brand > img {
   height: 100%;
 }
-#content {
-  padding-top: 50px;
-}
 .push-down {
-  padding-top: 50px;
+  padding-top: 15px;
+}
+@media (min-width: 768px) {
+  .push-down {
+    padding-top: 30px;
+  }
 }
 @media (min-width: 768px) {
   #content {
@@ -42,8 +44,10 @@ footer {
 .widen {
   width: 100%;
 }
-.widen-50 {
-  width: 50%;
+@media (min-width: 768px) {
+  .widen-50 {
+    width: 50%;
+  }
 }
 .navbar {
   border-bottom: 1px solid #ddd;
@@ -71,14 +75,6 @@ footer {
   background-image: none;
   -webkit-box-shadow: none;
   box-shadow: none;
-}
-@media (min-width: 768px) {
-  .col-left {
-    margin-right: 15px;
-  }
-  .col-right {
-    margin-left: 15px;
-  }
 }
 @media (min-width: 768px) {
   .navbar-default .navbar-nav > .active > a {
