@@ -73,6 +73,14 @@ footer {
   box-shadow: none;
 }
 @media (min-width: 768px) {
+  .col-left {
+    margin-right: 15px;
+  }
+  .col-right {
+    margin-left: 15px;
+  }
+}
+@media (min-width: 768px) {
   .navbar-default .navbar-nav > .active > a {
     background-color: #fff;
     background-image: none;
