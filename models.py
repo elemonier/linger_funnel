@@ -13,7 +13,7 @@ import datetime as dt
 
 class User(db.Model):
 	#index? necessaryd
-	user_id = db.Column(db.Integer, primary_key = True)
+	user_id = db.Column(db.Integer, primary_key = True, unique = True)
 	user_name = db.Column(db.String(64), index = True)
 	user_phone = db.Column(db.String(64), index = True, unique = True)
 	user_encrypted_password = db.Column(db.String(64), index = True, unique = True)
@@ -21,19 +21,21 @@ class User(db.Model):
 	user_email = db.Column(db.String(64), index = True, unique = True)
 	user_created_at = db.Column(db.DateTime, index = True)
 	user_updated_at = db.Column(db.DateTime, index = True)
-	user_contacts = relationship('Contact')
+	user_contacts = relationship('Contact', order_by = 'Contact.contact_id', backref='user')
 	
 	def __repr__(self):
 		''' Print objects of User class	'''
-		return "<User(name='%s', phone='%s', email='%s', created='%s')>" % (
-			self.user_name, self.user_phone, self.user_email, 
-			str(self.user_created_at.day) + '/' + str(self.user_created_at.month) + '/' + str(self.user_created_at.year))
+		return "<User(id = '%s', name='%s', phone='%s', email='%s', created='%s')>" % (
+			str(self.user_id), self.user_name, self.user_phone, self.user_email, 
+			str(self.user_created_a)
+			#str(self.user_created_at.day) + '/' + str(self.user_created_at.month) + '/' + str(self.user_created_at.year)
+			)
 
 	def __init__(self, name, email, phone, password):
 		#self.user_id = 
 	    self.user_name = name
 	    self.user_email = email
-	    self.phone = phone
+	    self.user_phone = phone
 	    self.encrypted_password = password #encrypted? how
 	    #self.contacts = []
 	    self.user_created_at = dt.datetime.now()
@@ -43,7 +45,8 @@ class Contact(db.Model):
 
 	contact_id = db.Column(db.Integer, primary_key = True)
 	#root user?
-	contact_user = db.Column(Integer, ForeignKey('user.user_id')) #chose user_id. guarenteed unique
+	contact_user_id = db.Column(Integer, ForeignKey('user.user_id')) #chose user_id. guarenteed unique
+	contact_user = relationship('User', backref=backref('contacts', order_by=contact_id))
 	contact_name = db.Column(db.String(64))
 	contact_phone1 = db.Column(db.Integer)
 	contact_phone2 = db.Column(db.Integer)

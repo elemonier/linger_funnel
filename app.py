@@ -11,6 +11,7 @@ app.debug = True
 #DATABASE
 #app.config.from_object('config')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+app.config['SQLALCHEMY_ECHO'] = True
 #gets models from models.py
 
 
@@ -33,7 +34,7 @@ def about():
 @app.route("/contact", methods=["GET", "POST"])
 def contact():
 	if request.method == "POST":
-		print 'email'
+		print 'email', 
 		return render_template("contact.html", signup_email=request.form["register_email"])
 	else: # request.method == "GET"
 		print 'not email'
