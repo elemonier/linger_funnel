@@ -25,8 +25,9 @@ class User(db.Model):
 	
 	def __repr__(self):
 		''' Print objects of User class	'''
-		return "<User(name='%s', phone='%s', email='%s')>" % (
-			self.user_name, self.user_phone, self.user_email)
+		return "<User(name='%s', phone='%s', email='%s', created='%s')>" % (
+			self.user_name, self.user_phone, self.user_email, 
+			str(self.user_created_at.day) + '/' + str(self.user_created_at.month) + '/' + str(self.user_created_at.year))
 
 	def __init__(self, name, email, phone, password):
 		#self.user_id = 
@@ -35,8 +36,8 @@ class User(db.Model):
 	    self.phone = phone
 	    self.encrypted_password = password #encrypted? how
 	    #self.contacts = []
-	    self.user_created_at = dt.datetime
-	    self.user_updated_at = dt.datetime
+	    self.user_created_at = dt.datetime.now()
+	    self.user_updated_at = dt.datetime.now()
 
 class Contact(db.Model):
 
