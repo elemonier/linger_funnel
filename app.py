@@ -50,10 +50,9 @@ def show_user_profile(username_entry):
 	print 'user_instance', user_instance
 	contact_dict = user_instance.contacts.all()
 	messages_dict = user_instance.messages.all()
-
 	#render template w/ contacts, messages in dictionary form
 	return render_template("dashboard.html", 
-		username=username, 
+		username=username_entry, 
 		contacts = contact_dict, 
 		messages = messages_dict)
 
