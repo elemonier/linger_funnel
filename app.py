@@ -19,12 +19,16 @@ def login():
 def about():
 	return render_template("about.html")
 
-@app.route("/contact", methods=["GET", "POST"])
-def contact():
+@app.route("/signup", methods=["GET", "POST"])
+def signup():
 	if request.method == "POST":
-	    return render_template("contact.html", signup_email=request.form["register_email"])
+	    return render_template("signup.html", signup_email=request.form["register_email"])
 	else: # request.method == "GET"
-		return render_template("contact.html")
+		return render_template("signup.html")
+
+@app.route("/contact")
+def contact():
+	return render_template("contact.html")
 
 # sample dynamic url route
 # @app.route("/search/<search_query>")
