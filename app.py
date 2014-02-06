@@ -9,7 +9,8 @@ app = Flask(__name__)
 app.debug = True
 
 #DATABASE
-app.config.from_object('config')
+#app.config.from_object('config')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
 #gets models from models.py
 
 
@@ -19,6 +20,7 @@ app.config.from_object('config')
 #config has db uri,e tc. 
 
 db = SQLAlchemy(app)
+db.create_all()
 
 @app.route("/")
 def login():
@@ -31,16 +33,20 @@ def about():
 @app.route("/contact", methods=["GET", "POST"])
 def contact():
 	if request.method == "POST":
-	    return render_template("contact.html", signup_email=request.form["register_email"])
+		print 'email'
+		return render_template("contact.html", signup_email=request.form["register_email"])
 	else: # request.method == "GET"
+		print 'not email'
 		return render_template("contact.html")
 
-@app.route('/user/<username>')
-def show_user_profile(username):
+@app.route('/user/<username_entry>')
+def show_user_profile(username_entry):
 	''' Show user profile of username, contacts, messages '''
     #query db for user, get contacts, messages
     #TEST LINE SESSION: user_instance = session.query(User).filter_by(user_name = username).first() 
-	user_instance = session.query(User).filter_by(user_name = username).first() 
+	#user_instance = session.query(User).filter_by(user_name = username).first() 
+	user_instance = models.User.query.filter_by(user_name= username_entry)
+	print 'user_instance', user_instance
 	contact_dict = user_instance.contacts.all()
 	messages_dict = user_instance.messages.all()
 
@@ -49,7 +55,6 @@ def show_user_profile(username):
 		username=username, 
 		contacts = contact_dict, 
 		messages = messages_dict)
-
 
 
 @app.errorhandler(404)
