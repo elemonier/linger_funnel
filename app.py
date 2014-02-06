@@ -78,10 +78,12 @@ def show_user_profile(username_entry):
 	''' Show user profile of username, contacts, messages '''
 	#query db for user info
 
-	#print 'username_entry', username_entry
 	user_instance = models.User.query.filter_by(user_name=username_entry).first()
+	#if user doesn't exist, route to signup page
+	if user_instance is None:
+		return render_template("signup.html")
 	#only displaying if user exists...
-	print 'USERNAME INSTANCE', user_instance.user_id
+	print 'USERNAME INSTANCE', user_instance
 	#print 'user_instance', user_instance.user_id
 	contact_dict = user_instance.user_contacts.all()
 	inmessages_dict = user_instance.user_inmessages.all()
