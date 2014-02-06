@@ -34,7 +34,11 @@ def contact():
 @app.route('/user/<username>')
 def show_user_profile(username):
     # show the user profile for that user
-    return render_template("dashboard.html", username=username)
+    # ACCESS DB
+    # get users with name username
+    # put all their contacts into dict
+
+    return render_template("dashboard.html", username=username, contacts={}, messages={})
 
 
 @app.errorhandler(404)

@@ -1,8 +1,8 @@
-@font-face {
-  font-family: 'Lato Lite';
-  font-style: lite;
-  font-weight: 400;
-  src: url(link-to-proxima-nova-font.woff) format('woff');
+.bg-red {
+  background-color: #BE010C;
+}
+a .bg-red :hover {
+  background-color: #7C0006;
 }
 footer {
   position: fixed;
@@ -112,7 +112,7 @@ footer {
 .navbar-blue .navbar-nav > li > a {
   color: #FFF;
 }
-.navbar-blue .navbar-nav > li > a:hover {
+.navbar-blue .navbar-nav > li > a :not(.bg-red) :hover {
   background-color: #5B9A8F;
 }
 .navbar-blue .navbar-toggle {
