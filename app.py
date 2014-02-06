@@ -26,6 +26,17 @@ def signup():
 	else: # request.method == "GET"
 		return render_template("signup.html")
 
+@app.route("/signup-submit", methods=["GET", "POST"])
+def signup():
+	if request.method == "POST":
+		# add method to get elements from post and push to db.
+
+
+		# js alert? homepage?
+	    return render_template("signupsuccess.html", signup_email=request.form["register_email"])
+	else: # request.method == "GET"
+		return render_template("signup.html")
+
 @app.route("/contact")
 def contact():
 	return render_template("contact.html")
