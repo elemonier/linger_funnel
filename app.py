@@ -1,14 +1,23 @@
 from flask import Flask, jsonify, render_template, request
 from flask.ext.sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import sessionmaker
 import requests
-
+import os
+import models
 
 app = Flask(__name__)
-
-# disable this for launch (~~ 'watch')
 app.debug = True
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://username:password@server/db'
+#DATABASE
+app.config.from_object('config')
+#gets models from models.py
+
+
+#SESSIONS
+#Session = sessionmaker(bind=engine)
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://username:password@server/db'
+#config has db uri,e tc. 
+
 db = SQLAlchemy(app)
 
 @app.route("/")
@@ -26,22 +35,26 @@ def contact():
 	else: # request.method == "GET"
 		return render_template("contact.html")
 
-# sample dynamic url route
-# @app.route("/search/<search_query>")
-# def search(search_query):
-# 	return search_query
-
 @app.route('/user/<username>')
 def show_user_profile(username):
-    # show the user profile for that user
-    #here is where i get contacts, messages from db.
-    return render_template("dashboard.html", username=username)
+	''' Show user profile of username, contacts, messages '''
+    #query db for user, get contacts, messages
+    #TEST LINE SESSION: user_instance = session.query(User).filter_by(user_name = username).first() 
+	user_instance = session.query(User).filter_by(user_name = username).first() 
+	contact_dict = user_instance.contacts.all()
+	messages_dict = user_instance.messages.all()
+
+	#render template w/ contacts, messages in dictionary form
+	return render_template("dashboard.html", 
+		username=username, 
+		contacts = contact_dict, 
+		messages = messages_dict)
+
 
 
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template("404.html"), 404
-
 
 
 if __name__ == "__main__":
