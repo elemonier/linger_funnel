@@ -21,6 +21,8 @@ class User(db.Model):
 	user_email = db.Column(db.String(64), index = True, unique = True)
 	user_created_at = db.Column(db.DateTime, index = True)
 	user_updated_at = db.Column(db.DateTime, index = True)
+	user_inmessages = db.relationship('InMessage', backref='user', lazy='dynamic')
+	user_outmessages = db.relationship('OutMessage', backref='user', lazy='dynamic')
 	#one-to-many. One user has many contacts
 	user_contacts = db.relationship('Contact', backref='user', lazy='dynamic')
 	
@@ -65,7 +67,7 @@ class Contact(db.Model):
 
 class InMessage(db.Model):
 	inmessage_id = db.Column(db.Integer, primary_key = True)
-	inmessage_user = db.Column(db.String(64))
+	inmessage_user = db.Column(db.Integer, db.ForeignKey('user.user_id'))
 	inmessage_contact = db.Column(db.String(64))
 	inmessage_content = db.Column(db.String(120))
 	inmessage_when_received = db.Column(db.DateTime)
@@ -76,7 +78,7 @@ class InMessage(db.Model):
 
 class OutMessage(db.Model):
 	outmessage_id = db.Column(db.Integer, primary_key = True)
-	outmessage_user = db.Column(db.String(64))
+	outmessage_user = db.Column(db.Integer, db.ForeignKey('user.user_id'))
 	outmessage_contact = db.Column(db.String(64))
 	outmessage_content = db.Column(db.String(120))
 	outmessage_when_received = db.Column(db.DateTime)
