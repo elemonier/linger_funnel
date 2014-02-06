@@ -1,8 +1,7 @@
 from flask import Flask, jsonify, render_template, request
 from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import sessionmaker
-import requests
-import os
+import requests, os
 import models
 from sqlalchemy import create_engine
 
@@ -11,16 +10,14 @@ app.debug = True
 
 #DATABASE
 #app.config.from_object('config')
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
-#app.config['SQLALCHEMY_ECHO'] = True
-#gets models from models.py
-
-# an Engine, which the Session will use for connection
-# resources
-my_engine = create_engine('sqlite:////tmp/test.db')
-
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+app.config['SQLALCHEMY_ECHO'] = True
 db = SQLAlchemy(app)
-db.create_all()
+#gets models from models.py
+#my_engine = create_engine('sqlite:////tmp/test.db')
+
+
+#db.create_all()
 
 @app.route("/")
 def login():
@@ -52,16 +49,16 @@ def signupsubmit():
 		# name, email, phone, password)
 		#check equal passwords
 		if request.form['signup-pass1'] == request.form['signup-pass1']:
-			new_session = session_creator()
-			new_session._model_changes = {}
+			# new_session = session_creator()
+			# new_session._model_changes = {}
 			new_user = models.User(
 					request.form['signup-name'], 
 					request.form['signup-email'], 
 					request.form['signup-phone'],
 					request.form['signup-pass1'])
 			print new_user
-			new_session.add(new_user)
-			new_session.commit()
+			db.session.add(new_user)
+			db.session.commit()
 			return render_template("signupsuccess.html", signup_email=request.form["register_email"])
 		else:
 			#TO DO: print 'password incorrect?'
@@ -80,16 +77,21 @@ def contact():
 def show_user_profile(username_entry):
 	''' Show user profile of username, contacts, messages '''
 	#query db for user info
-	print 'username_entry', username_entry
+
+	#print 'username_entry', username_entry
 	user_instance = models.User.query.filter_by(user_name=username_entry).first()
-	print 'user_instance', user_instance.user_id
+	#only displaying if user exists...
+	print 'USERNAME INSTANCE', user_instance.user_id
+	#print 'user_instance', user_instance.user_id
 	contact_dict = user_instance.user_contacts.all()
-	messages_dict = user_instance.messages.all()
+	inmessages_dict = user_instance.user_inmessages.all()
+	outmessages_dict = user_instance.user_outmessages.all()
 	#render template w/ contacts, messages in dictionary form
 	return render_template("dashboard.html", 
 		username=username_entry, 
 		contacts = contact_dict, 
-		messages = messages_dict)
+		inmessages = inmessages_dict,
+		outmessages = outmessages_dict)
 
 
 @app.errorhandler(404)
