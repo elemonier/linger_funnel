@@ -11,6 +11,13 @@
 .grand {
   font-family: 'Grand Hotel', cursive;
 }
+.about-carousel-on {
+  display: block;
+}
+.about-carousel-next,
+.about-carousel-off {
+  display: none;
+}
 .bg-red {
   background-color: #BE010C;
 }
