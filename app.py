@@ -40,6 +40,8 @@ def contact():
 		print 'not email'
 		return render_template("contact.html")
 
+
+#goal: add username entry from blah.
 @app.route('/user/<username_entry>')
 def show_user_profile(username_entry):
 	''' Show user profile of username, contacts, messages '''
