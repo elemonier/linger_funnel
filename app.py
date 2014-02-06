@@ -34,6 +34,7 @@ def contact():
 @app.route('/user/<username>')
 def show_user_profile(username):
     # show the user profile for that user
+    #here is where i get contacts, messages from db.
     return render_template("dashboard.html", username=username)
 
 
