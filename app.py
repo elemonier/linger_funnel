@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, render_template, request
 from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import sessionmaker
-import requests, os
+import requests, os, json, datetime
 import models
 from sqlalchemy import create_engine
 
@@ -41,6 +41,40 @@ def signup():
 # route("/login", post)
 # req.form[username]
 # post new row (if unique) to db
+
+@app.route("/app/contacts/<user_phone_number>")
+def update_contacts(user_phone_number):
+''' updates contacts for user associated w/ user_phone 
+	
+	1. deletes existing contacts assoc. w/ user_phone (unique)
+	2. adds all contacts from post to db
+	3. adds all contacts from post to current user's contact list
+	3. updates current user's user_updated_at (datetime obj.) to now
+
+'''
+
+	contact_list = request.get_json(force = True) #list of contacts posted; Assumption: list of dictionaries.
+	current_user = models.User.query.filter_by(user_phone = user_phone_number).first()
+	
+	#delete all contacts associated w/ user_id
+	models.Contacts.query.filter_by(contact_user = username_entry.user_id).delete()
+	#sets user_updated_at (ie updated time) to now
+	current_user.user_updated_at = datetime.datetime.now()
+
+	#add all new contacts to db + associate w/ user + commit
+	for contact in contact_list:
+		new_contact = models.Contact(
+			contact['contact_name']
+			contact['contact_phone1']
+			contact['contact_phone2']
+			contact['contact_email1']
+			contact['contact_email2']
+			)
+		db.session.add(new_contact)
+		current_user.user_contacts.append(new_contact)
+
+	db.session.commit()
+	return render_template("login.html") #DUMMY RETURN
 
 
 
@@ -101,6 +135,9 @@ def show_user_profile(username_entry):
 		inmessages = inmessages_dict,
 		outmessages = outmessages_dict)
 
+#twilio tests
+#@app.route("/user/<username_entry>/contact/compose_message") #compose message
+
 
 @app.errorhandler(404)
 def page_not_found(error):
@@ -109,3 +146,5 @@ def page_not_found(error):
 
 if __name__ == "__main__":
 	app.run(host="0.0.0.0")
+
+
