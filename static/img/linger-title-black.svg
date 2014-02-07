@@ -8,7 +8,11 @@
 	 x="0px" y="0px" width="400px" height="200px" viewBox="-25.09 -39.135 400 200"
 	 overflow="visible" enable-background="new -25.09 -39.135 400 200" xml:space="preserve">
 <defs>
+	<style type="text/css">
+	  @import url(http://fonts.googleapis.com/css?family=Grand+Hotel);
+	  text { text-anchor: middle; font: 96px 'Grand Hotel'; text-rendering: geometricPrecision; }	  
+	</style>
 </defs>
-<rect y="17.76" fill="none" width="349.82" height="98.195"/>
-<text transform="matrix(1 0 0 1 79.1523 81.5991)" font-family="'GrandHotel-Regular'" font-size="96">Linger</text>
+<rect fill="none" width="350" height="100"/>
+<text transform="matrix(1 0 0 1 175 100)">Linger</text>
 </svg>
