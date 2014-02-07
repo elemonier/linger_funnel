@@ -30,8 +30,21 @@ def signup():
 		print 'signup-get'
 		return render_template("signup.html")
 
-@app.route("/signup-submit", methods=["GET", "POST"])
 
+# route("/app/register", post)
+# request.JSONPARSINGLIBHERE
+# build contact/message info json into object, see if it's in db. add if not
+
+# route("/app/update")
+# here too as above
+
+# route("/login", post)
+# req.form[username]
+# post new row (if unique) to db
+
+
+
+@app.route("/signup-submit", methods=["GET", "POST"])
 def signup_submit():
 	#request_form...
 	if request.method == "POST":
