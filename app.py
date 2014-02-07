@@ -74,6 +74,7 @@ def contact():
 	return render_template("contact.html")
 
 
+
 #goal: add username entry from blah.
 @app.route('/user/<username_entry>')
 def show_user_profile(username_entry):
@@ -82,8 +83,10 @@ def show_user_profile(username_entry):
 
 	user_instance = models.User.query.filter_by(user_name=username_entry).first()
 	#if user doesn't exist, route to signup page
+	print user_instance
+	print "past"
 	if user_instance is None:
-		return render_template("signup.html")
+		return render_template("login.html", )
 	#only displaying if user exists...
 	#print 'user_instance', user_instance.user_id
 	contact_dict = user_instance.user_contacts.all() 
