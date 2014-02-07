@@ -112,6 +112,11 @@ footer {
   -webkit-box-shadow: inset 0 3px 9px rgba(0, 0, 0, 0.075);
   box-shadow: inset 0 3px 9px rgba(0, 0, 0, 0.075);
 }
+.navbar-blue .navbar-nav > li > a:hover {
+  background-color: #5B9A8F;
+  -webkit-box-shadow: inset 0 3px 9px rgba(0, 0, 0, 0.075);
+  box-shadow: inset 0 3px 9px rgba(0, 0, 0, 0.075);
+}
 .navbar-blue .navbar-nav > .active > a {
   background-color: #5B9A8F;
   background-image: none;
