@@ -15,13 +15,16 @@ module.exports = function(grunt) {
     },
 
     less: {
-      options: {
-        compress: true,
-        yuicompress: true,
-        optimization: 2
-      },
-      files: {
-        "less/main.less"s: "static/css/main.css"
+      // options: {
+      //   compress: true,
+      //   yuicompress: true,
+      //   optimization: 2
+      // },
+      build: {
+        src: [
+          "less/main.less"
+        ],
+        dest: "static/css/main.css"
       }
     },
     coffee: {
