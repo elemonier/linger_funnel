@@ -53,6 +53,7 @@ class User(db.Model):
 
 class Contact(db.Model):
 	''' Contact class '''
+	__tablename__ = 'contacts'
 	contact_user = db.Column(db.Integer, db.ForeignKey('users.user_id'))	#user relationship
 
 	contact_id = db.Column(db.Integer, primary_key = True)
@@ -76,6 +77,7 @@ class Contact(db.Model):
 
 class InMessage(db.Model):
 	''' InMessage Class '''
+	__tablename__ = 'in_messages'
 	inmessage_user = db.Column(db.Integer, db.ForeignKey('users.user_id')) #relationship w/ usr
 	#inmessage_contact = db.Column(db.Integer, db.ForeignKey('user.user_id')) #relationship w/ usr
 	inmessage_contact = db.Column(db.String(64))
@@ -95,6 +97,7 @@ class InMessage(db.Model):
 
 class OutMessage(db.Model):
 	''' OutMessage Class '''
+	__tablename__ = 'out_messages'
 	outmessage_user = db.Column(db.Integer, db.ForeignKey('users.user_id')) #relationship w/ usr
 	#inmessage_contact = db.Column(db.Integer, db.ForeignKey('user.user_id')) #relationship w/ usr
 	outmessage_contact = db.Column(db.String(64))
