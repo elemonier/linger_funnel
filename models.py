@@ -13,6 +13,7 @@ import datetime as dt
 
 class User(db.Model):
 	''' User Class '''
+	__tablename__ = 'users'
 	#relationships
 	user_inmessages = db.relationship('InMessage', backref='user', lazy='dynamic')
 	user_outmessages = db.relationship('OutMessage', backref='user', lazy='dynamic')
@@ -28,13 +29,14 @@ class User(db.Model):
 	user_updated_at = db.Column(db.DateTime, index = True)
 	
 
-	
 	def __init__(self, name, email, phone, password):
 		''' User constructor '''
 		self.user_name = name
 		self.user_email = email
 		self.user_phone = phone
-		self.encrypted_password = password #encrypted? how
+		self.user_encrypted_password = password #encrypted? how
+		self.user_salt = password
+
 		self.user_created_at = dt.datetime.now()
 		self.user_updated_at = dt.datetime.now()
 
@@ -51,12 +53,12 @@ class User(db.Model):
 
 class Contact(db.Model):
 	''' Contact class '''
-	contact_user = db.Column(db.Integer, db.ForeignKey('user.user_id'))	#user relationship
+	contact_user = db.Column(db.Integer, db.ForeignKey('users.user_id'))	#user relationship
 
 	contact_id = db.Column(db.Integer, primary_key = True)
 	contact_name = db.Column(db.String(64))
-	contact_phone1 = db.Column(db.Integer)
-	contact_phone2 = db.Column(db.Integer)
+	contact_phone1 = db.Column(db.String(64))
+	contact_phone2 = db.Column(db.String(64))
 	contact_email1 = db.Column(db.String(64))
 	contact_email2 = db.Column(db.String(64))
 
@@ -74,7 +76,7 @@ class Contact(db.Model):
 
 class InMessage(db.Model):
 	''' InMessage Class '''
-	inmessage_user = db.Column(db.Integer, db.ForeignKey('user.user_id')) #relationship w/ usr
+	inmessage_user = db.Column(db.Integer, db.ForeignKey('users.user_id')) #relationship w/ usr
 	#inmessage_contact = db.Column(db.Integer, db.ForeignKey('user.user_id')) #relationship w/ usr
 	inmessage_contact = db.Column(db.String(64))
 	
@@ -93,7 +95,7 @@ class InMessage(db.Model):
 
 class OutMessage(db.Model):
 	''' OutMessage Class '''
-	outmessage_user = db.Column(db.Integer, db.ForeignKey('user.user_id')) #relationship w/ usr
+	outmessage_user = db.Column(db.Integer, db.ForeignKey('users.user_id')) #relationship w/ usr
 	#inmessage_contact = db.Column(db.Integer, db.ForeignKey('user.user_id')) #relationship w/ usr
 	outmessage_contact = db.Column(db.String(64))
 	

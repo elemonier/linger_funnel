@@ -8,16 +8,10 @@ from sqlalchemy import create_engine
 app = Flask(__name__)
 app.debug = True
 
-#DATABASE
-#app.config.from_object('config')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
-app.config['SQLALCHEMY_ECHO'] = True
+#app.config['SQLALCHEMY_ECHO'] = True
+app.config.from_object('config.flask_config')
 db = SQLAlchemy(app)
-#gets models from models.py
-#my_engine = create_engine('sqlite:////tmp/test.db')
 
-
-#db.create_all()
 
 @app.route("/")
 def login():
@@ -44,13 +38,8 @@ def signupsubmit():
 		# add method to get elements from post and push to db.
 		# js alert? homepage?
 
-		#check password identity. 
-		#create user
-		# name, email, phone, password)
 		#check equal passwords
 		if request.form['signup-pass1'] == request.form['signup-pass1']:
-			# new_session = session_creator()
-			# new_session._model_changes = {}
 			new_user = models.User(
 					request.form['signup-name'], 
 					request.form['signup-email'], 
@@ -83,14 +72,18 @@ def show_user_profile(username_entry):
 	if user_instance is None:
 		return render_template("signup.html")
 	#only displaying if user exists...
-	print 'USERNAME INSTANCE', user_instance
 	#print 'user_instance', user_instance.user_id
-	contact_dict = user_instance.user_contacts.all()
+	contact_dict = user_instance.user_contacts.all() 
 	inmessages_dict = user_instance.user_inmessages.all()
 	outmessages_dict = user_instance.user_outmessages.all()
+
+	print 'USERNAME INSTANCE: ', user_instance
+	print 'CONTACT: ', contact_dict
+	print 'MESSAGES: ', inmessages_dict, outmessages_dict
+	
 	#render template w/ contacts, messages in dictionary form
 	return render_template("dashboard.html", 
-		username=username_entry, 
+		username= username_entry, 
 		contacts = contact_dict, 
 		inmessages = inmessages_dict,
 		outmessages = outmessages_dict)
