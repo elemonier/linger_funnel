@@ -21,7 +21,7 @@ module.exports = function(grunt) {
         optimization: 2
       },
       files: {
-        "static/css/main.css": "less/main.less"
+        "less/main.less"s: "static/css/main.css"
       }
     },
     coffee: {

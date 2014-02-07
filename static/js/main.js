@@ -14,6 +14,6 @@ function shift_about_carousel() {
 	$('.about-carousel-on').removeClass('about-carousel-on');
 	$('.about-carousel-next').addClass('about-carousel-on');
 	$('.about-carousel-next').removeClass('about-carousel-next');
-	$('.about-carousel-off').addClass('about-carousel-next');
-	$('.about-carousel-off').removeClass('about-carousel-off');
+	$('.about-carousel-next-next').addClass('about-carousel-next');
+	$('.about-carousel-next-next').removeClass('about-carousel-next-next');
 }
