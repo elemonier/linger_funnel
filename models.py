@@ -14,11 +14,13 @@ import datetime as dt
 class User(db.Model):
 	''' User Class '''
 	__tablename__ = 'users'
-	#relationships
+	
+	#attributes w/ relationships
 	user_inmessages = db.relationship('InMessage', backref='user', lazy='dynamic')
 	user_outmessages = db.relationship('OutMessage', backref='user', lazy='dynamic')
 	user_contacts = db.relationship('Contact', backref='user', lazy='dynamic')
 
+	#attributes
 	user_id = db.Column(db.Integer, primary_key = True, unique = True)
 	user_name = db.Column(db.String(64), index = True)
 	user_phone = db.Column(db.String(64), index = True, unique = True)
@@ -31,6 +33,7 @@ class User(db.Model):
 
 	def __init__(self, name, email, phone, password):
 		''' User constructor '''
+		
 		self.user_name = name
 		self.user_email = email
 		self.user_phone = phone
@@ -42,6 +45,7 @@ class User(db.Model):
 
 	def __repr__(self):
 		''' Print objects of User class	'''
+		
 		return "<User(id = '%s', name='%s', phone='%s', email='%s', created='%s')>" % (
 			str(self.user_id), 
 			self.user_name, 
@@ -54,8 +58,11 @@ class User(db.Model):
 class Contact(db.Model):
 	''' Contact class '''
 	__tablename__ = 'contacts'
+	
+	#attributes w/ relationship
 	contact_user = db.Column(db.Integer, db.ForeignKey('users.user_id'))	#user relationship
 
+	#attributes
 	contact_id = db.Column(db.Integer, primary_key = True)
 	contact_name = db.Column(db.String(64))
 	contact_phone1 = db.Column(db.String(64))
@@ -66,10 +73,10 @@ class Contact(db.Model):
 	def __init__(self, name, phone1, phone2, email1, email2): #implement kwargs for phone1, 2, or default to None?
 		''' Contact constructor '''
 		self.contact_name = name
-		self.phone1 = phone1
-		self.phone2 = phone2
-		self.email1 = email1
-		self.email2 = email2
+		self.contact_phone1 = phone1
+		self.contact_phone2 = phone2
+		self.contact_email1 = email1
+		self.contact_email2 = email2
 
 	def __repr__(self):
 		''' Print objects of Contact class'''
@@ -77,11 +84,15 @@ class Contact(db.Model):
 
 class InMessage(db.Model):
 	''' InMessage Class '''
+
 	__tablename__ = 'in_messages'
+	
+	#attributes w/ relationship
 	inmessage_user = db.Column(db.Integer, db.ForeignKey('users.user_id')) #relationship w/ usr
 	#inmessage_contact = db.Column(db.Integer, db.ForeignKey('user.user_id')) #relationship w/ usr
 	inmessage_contact = db.Column(db.String(64))
 	
+	#attribute
 	inmessage_id = db.Column(db.Integer, primary_key = True)
 	inmessage_content = db.Column(db.String(400)) #make dynamic??
 	inmessage_when_received = db.Column(db.DateTime)
