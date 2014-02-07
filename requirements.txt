@@ -15,5 +15,5 @@ python-apt==0.8.3ubuntu7
 python-debian==0.1.21ubuntu1
 ufw==0.31.1-1
 wsgiref==0.1.2
-Flask-SQLAlchemy
-requests
+requestsFlask==0.10.1
+Flask-SQLAlchemy==1.0
