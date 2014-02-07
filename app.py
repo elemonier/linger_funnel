@@ -14,7 +14,7 @@ db = SQLAlchemy(app)
 
 
 @app.route("/")
-def login():
+def home():
 	return render_template("login.html")
 
 @app.route("/about")
@@ -73,36 +73,56 @@ def signup_submit():
 def contact():
 	return render_template("contact.html")
 
-
+# @app.route("/login", methods=["GET", "POST"])
+# def login():
+# 	if request.method == "POST":
+# 		print 'signupsubmit-post'
+# 		# add method to get elements from post and push to db.
+# 		# js alert? homepage?
+# 		#check equal passwords
+# 		if request.form['signup-pass1'] == request.form['signup-pass1']:
+# 			new_user = models.User(
+# 					request.form['signup-name'], 
+# 					request.form['signup-email'], 
+# 					request.form['signup-phone'],
+# 					request.form['signup-pass1'])
+# 			print new_user
+# 			db.session.add(new_user)
+# 			db.session.commit()
+# 			return render_template("signupsuccess.html", signup_email=request.form["register_email"])
+# 		else:
+# 			#TO DO: print 'password incorrect?'
+# 			return render_template("signup.html")
+# 	else: # request.method == "GET"
+# 		print 'signupsubmit-post'
+# 		return render_template("signup.html")
 
 #goal: add username entry from blah.
-@app.route('/user/<username_entry>')
-def show_user_profile(username_entry):
+@app.route('/user/<user_phone>')
+def show_user_profile(user_phone):
 	''' Show user profile of username, contacts, messages '''
 	#query db for user info
-
-	user_instance = models.User.query.filter_by(user_name=username_entry).first()
+	user_instance = models.User.query.filter_by(user_phone=user_phone).first()
 	#if user doesn't exist, route to signup page
-	print user_instance
-	print "past"
 	if user_instance is None:
-		return render_template("login.html", )
+		return render_template("login.html", user_phone=user_phone, error="Phone number entered was invalid")
+
 	#only displaying if user exists...
 	#print 'user_instance', user_instance.user_id
-	contact_dict = user_instance.user_contacts.all() 
-	inmessages_dict = user_instance.user_inmessages.all()
-	outmessages_dict = user_instance.user_outmessages.all()
+	contact_list = user_instance.user_contacts.all() 
+	inmessages_list = user_instance.user_inmessages.all()
+	outmessages_list = user_instance.user_outmessages.all()
 
-	print 'USERNAME INSTANCE: ', user_instance
-	print 'CONTACT: ', contact_dict
-	print 'MESSAGES: ', inmessages_dict, outmessages_dict
+	# print 'USERNAME INSTANCE: ', user_instance
+	# print 'CONTACT: ', contact_dict
+	# print 'MESSAGES: ', inmessages_dict, outmessages_dict
 	
 	#render template w/ contacts, messages in dictionary form
 	return render_template("dashboard.html", 
-		username= username_entry, 
-		contacts = contact_dict, 
-		inmessages = inmessages_dict,
-		outmessages = outmessages_dict)
+		username= user_phone, 
+		contacts = contact_list, 
+		inmessages = inmessages_list,
+		outmessages = outmessages_list)
 
 
 @app.errorhandler(404)
