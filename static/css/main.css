@@ -194,3 +194,7 @@ footer {
     line-height: 2em;
   }
 }
+.panel-default > .panel-heading {
+  color: #fff;
+  background-color: #5b9a8f;
+}

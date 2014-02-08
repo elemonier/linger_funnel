@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template, request, session
+from flask import Flask, jsonify, render_template, request, session, redirect
 from flask.ext.sqlalchemy import SQLAlchemy
 import requests, os, json, datetime
 import models
@@ -178,11 +178,11 @@ def contact():
 # 		return render_template("signup.html")
 
 #goal: add username entry from blah.
-@app.route('/user/<user_id>')
+@app.route('/user/contacts/<user_id>')
 def show_contact_list(user_id):
 	''' Show user profile of username, contacts, messages '''
 	#query db for user info
-	user_instance = models.User.query.filter_by(user_phone=user_phone).first()
+	user_instance = models.User.query.filter_by(user_id=user_id).first()
 	#if user doesn't exist, route to signup page
 	if user_instance is None:
 		return render_template("login.html", user_phone=user_phone, error="Phone number entered was invalid")
@@ -198,11 +198,11 @@ def show_contact_list(user_id):
 	# print 'MESSAGES: ', inmessages_dict, outmessages_dict
 	
 	#render template w/ contacts, messages in dictionary form
-	return render_template("dashboard.html", 
-		username= user_phone, 
-		contacts = contact_list, 
-		inmessages = inmessages_list,
-		outmessages = outmessages_list)
+	return render_template("contacts_dashboard.html", 
+							username= user_phone, 
+							contacts = contact_list, 
+							inmessages = inmessages_list,
+							outmessages = outmessages_list)
 
 #twilio tests
 #@app.route("/user/<username_entry>/contact/compose_message") #compose message
