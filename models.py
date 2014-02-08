@@ -26,6 +26,12 @@ def clean_number(num):
 		phone1 = phone1[2:]
 	return phone1
 
+def check_when_sent(when_sent):
+	if type(when_sent) is datetime.datetime:
+		return when_sent
+	if type(when_sent) is long:
+		when_sent = dt.datetime.fromtimestamp(float(when_sent)/1000.).strftime('%Y-%m-%d %H:%M:%S')
+	return when_sent
 class User(db.Model):
 	''' User Class '''
 	__tablename__ = 'users'
@@ -149,8 +155,9 @@ class OutMessage(db.Model):
 
 	def __init__(self, contact_phone, content, thread, when_sent): #contact, user ide?
 		''' OutMessage Constructor '''
+		when_sent = check_when_sent(when_sent)
 		self.outmessage_contact_phone = clean_number(contact_phone)
-		self.outmessage_when_sent = dt.datetime.fromtimestamp(float(when_sent)/1000.).strftime('%Y-%m-%d %H:%M:%S')
+		self.outmessage_when_sent = when_sent
 		self.outmessage_content = content
 		self.outmessage_thread_id = thread
 
