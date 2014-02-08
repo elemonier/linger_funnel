@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, session
 from flask.ext.sqlalchemy import SQLAlchemy
 import requests, os, json, datetime
 import models
@@ -49,7 +49,11 @@ def signup():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-	form = LoginForm()
+	if request.method == "POST":
+		#find user by phone in db, confirm hash matches
+		#in tbwa server/blue/admin.py
+		session
+
 	if form.validate_on_submit():
 		#login + validate user
 		login_user(user)
