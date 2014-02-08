@@ -107,6 +107,7 @@ def update_contacts(user_phone_number):
 		#print request.data
 		print request.headers
 		user_phone_number = models.clean_number(user_phone_number)
+		print 'user_phone_number', user_phone_number
 		#contact_list = json.loads(request.data)#request.get_json(force = True) #list of contacts posted; Assumption: list of dictionaries.
 		contact_list = json.loads(request.data.decode('utf-8', 'ignore'))
 		print 'CONTACT_LIST', contact_list
@@ -144,6 +145,7 @@ def update_inmessages(user_phone_number):
 	'''
 	print "POST DEM FUCKING INMESSAGES"
 	user_phone_number = models.clean_number(user_phone_number)
+	print 'user_phone_number', user_phone_number
 	message_list = json.loads(request.data.decode('utf-8', 'ignore')) #list of contacts posted; Assumption: list of dictionaries.
 	current_user = models.User.query.filter_by(user_phone = user_phone_number).first()
 	last_updated = current_user.user_updated_at
