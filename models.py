@@ -67,7 +67,7 @@ class Contact(db.Model):
 
 	#attributes
 	contact_id = db.Column(db.Integer, primary_key = True)	#sequentially generated user id by db
-	contact_phone_id = db.Column(db.Integer, unique = True)	#android phone's uniquely generated id assoc. w/ contact
+	#contact_phone_id = db.Column(db.Integer, unique = True)	#android phone's uniquely generated id assoc. w/ contact
 	contact_name = db.Column(db.String(64))					
 	contact_phone1 = db.Column(db.String(64), unique = True)				
 	contact_email1 = db.Column(db.String(64), unique = True)				
@@ -75,7 +75,7 @@ class Contact(db.Model):
 
 	def __init__(self, name, phone_id, phone1, email1): #implement kwargs for phone1, 2, or default to None?
 		''' Contact constructor '''
-		selc.contact_phone_id = phone_id
+		#selc.contact_phone_id = phone_id
 		self.contact_name = name
 		self.contact_phone1 = phone1
 		self.contact_email1 = email1
@@ -92,19 +92,21 @@ class InMessage(db.Model):
 	
 	#attributes w/ relationship
 	inmessage_user = db.Column(db.Integer, db.ForeignKey('users.user_id')) 	#user id assoc. w/ message
-	inmessage_contact_phone_id = db.Column(db.Integer, db.ForeignKey('contact.contact_phone_id')) #contact phone_id assoc. w/ message
+	#inmessage_contact_id = db.Column(db.Integer, db.ForeignKey('contact.contact_phone_id')) #contact phone_id assoc. w/ message
 	
 	#attribute
 	inmessage_id = db.Column(db.Integer, primary_key = True)	#sequentially generated user id by db
-	inmessage_thread = db.Column(db.Integer)					#number associated w/ convo btwn user, contact
+	inmessage_contact_phone = db.Column(db.String)				#same as a contact phone_number
+	inmessage_when_received = db.Column(db.DateTime) 			#I'm getting a long.
 	inmessage_content = db.Column(db.String(400)) 				#make dynamic??
-	inmessage_when_received = db.Column(db.DateTime)
+	inmessage_thread = db.Column(db.Integer)					#number associated w/ convo btwn user, contact
 
-	def __init__(self, content, thead, when_received): #contact, user ide?
+	def __init__(self, content, contact_phone, thead, when_received): #contact, user ide?
 		''' InMessage Constructor '''
-		self.inmessage_thread = thread
-		self.inmessage_content = content
+		self.outmessage_contact_phone = contact_phone
 		self.inmessage_when_received = when_received #may need to parse into datetime object
+		self.inmessage_content = content
+		self.inmessage_thread = thread
 
 	def __repr__(self):
 		''' print objects of InMessage class '''
@@ -117,19 +119,21 @@ class OutMessage(db.Model):
 	
 	#attributes w/ relationship
 	outmessage_user = db.Column(db.Integer, db.ForeignKey('users.user_id')) #relationship w/ usr
-	outmessage_contact_phone_id = db.Column(db.Integer, db.ForeignKey('contact.contact_phone_id'))
+	#outmessage_contact_phone_id = db.Column(db.Integer, db.ForeignKey('contact.contact_phone_id'))
 	
 	#attribute
-	outmessage_id = db.Column(db.Integer, primary_key = True)	
-	outmessage_thread = db.Column(db.Integer)
-	outmessage_content = db.Column(db.String(400))
+	outmessage_id = db.Column(db.Integer, primary_key = True)
+	outmessage_contact_phone = db.Column(db.String)	
 	outmessage_when_sent = db.Column(db.DateTime) #fucked up. should be sent
+	outmessage_content = db.Column(db.String(400))
+	outmessage_thread = db.Column(db.Integer)
 
-	def __init__(self, content, thread, when_sent): #contact, user ide?
+	def __init__(self, contact_phone, content, thread, when_sent): #contact, user ide?
 		''' OutMessage Constructor '''
-		self.outmessage_thread = thread
-		self.outmessage_content = content
+		self.outmessage_contact_phone = contact_phone
 		self.outmessage_when_sent = when_sent
+		self.outmessage_content = content
+		self.outmessage_thread = thread
 
 
 	def __repr__(self):
