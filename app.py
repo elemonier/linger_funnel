@@ -334,19 +334,19 @@ def show_message(phone_number):
 		correspondent_name = phone_number
 
 	for message in inmessages_list:
-		if message.inmessage_contact_phone == phone_number
-			thread_list.append(correspondent_name, message.inmessage_content, message.inmessage_when_received)
+		if message.inmessage_contact_phone == phone_number:
+			thread_list.append((correspondent_name, message.inmessage_content, message.inmessage_when_received))
 
 	for message in outmessages_list:
-		if message.outmessage_contact_phone == phone_number
-			thread_list.append(correspondent_name, message.outmessage_content, message.outmessage_when_received)
+		if message.outmessage_contact_phone == phone_number:
+			thread_list.append((correspondent_name, message.outmessage_content, message.outmessage_when_sent))
 
 
 	sorted_thread_list = sorted(thread_list, key=lambda m: m[2])
 
 	
 	#render template w/ contacts, messages in dictionary form
-	return render_template("messages_dashboard.html", 
+	return render_template("message_view.html", 
 							username = user_instance.user_name, 
 							correspondent_name = correspondent_name,
 							thread_list = sorted_thread_list)

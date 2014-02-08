@@ -59,15 +59,14 @@
             <h3 class="panel-title">{{ correspondent_name }}</h3>
           </div>
           <div class="list-group">
-            <a href="#" class="list-group-item">
-              <h4 class="list-group-item-heading">{{ contact.contact_name }}</h4>
+
+            {% for (name, content, timestamp) in thread_list %}
+            <a class="list-group-item">
+              <h4 class="list-group-item-heading"> {{ name }}</h4>
+              <p> {{ content }} </p>
             </a>
-            <a href="callto:{{ phone number }}" class="list-group-item">
-              <h4 class="list-group-item-heading">{{ contact.contact_name }}</h4>
-            </a>
-            <a href="mailto:{{ email }}" class="list-group-item">
-              <h4 class="list-group-item-heading">{{ contact.contact_name }}</h4>
-            </a>
+            {% endfor %}
+
           </div>
         </div>
       </div>
