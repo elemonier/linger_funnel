@@ -28,10 +28,12 @@ def clean_number(num):
 
 def check_when_sent(when_sent):
 	print 'when_SENT: ', when_sent
+	print type(when_sent)
 	if type(when_sent) is dt.datetime:
 		return when_sent
-	if type(when_sent) is long:
+	if type(when_sent) is unicode:
 		return dt.datetime.fromtimestamp(float(when_sent)/1000.).strftime('%Y-%m-%d %H:%M:%S')
+	print "FORCE DATETIME NOW\n"
 	return dt.datetime.now()
 class User(db.Model):
 	''' User Class '''
