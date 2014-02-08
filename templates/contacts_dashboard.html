@@ -60,7 +60,7 @@
           </div>
           <div class="list-group">
             {% for contact in contacts %}
-            <a href="#" class="list-group-item">
+            <a href="/user/contact/{{ contact.contact_id }}" class="list-group-item">
               <h4 class="list-group-item-heading">{{ contact.contact_name }}</h4>
             </a>
             {% endfor %}
