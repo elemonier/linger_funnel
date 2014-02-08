@@ -41,8 +41,8 @@
       <div class="navbar-collapse collapse">
         <ul class="nav navbar-nav">
           <li><a> {{ username }} </a></li>
-          <li class="active"><a href="/user/contacts">Contacts</a></li>
-          <li><a href="/user/messages">Messages</a></li>
+          <li><a href="/user/contacts">Contacts</a></li>
+          <li class="active"><a href="/user/messages">Messages</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
           <li class="bg-red"><a class="no-bg" href="/logout">Logout</a></li>
@@ -62,12 +62,26 @@
 
             {% for (name, content, timestamp) in thread_list %}
             <a class="list-group-item">
-              <h4 class="list-group-item-heading"> {{ name }}</h4>
-              <p> {{ content }} </p>
+              <h4 class="list-group-item-heading {% if name == correspondent_name %}text-right{% endif %}">{% if name == correspondent_name %}<span class="text-muted small">{{ timestamp }} - </span>{% endif %}{{ name }}{% if name != correspondent_name %}<span class="text-muted small"> - {{ timestamp }}</span>{% endif %}</h4>
+              <p class="{% if name == correspondent_name %}text-right{% endif %}"> {{ content }} </p>
             </a>
             {% endfor %}
 
+
+            <span class="text-muted"> {{ timestamp }} </span>
+
+
           </div>
+
+          <form role="form" action="/user/send/{{ phone }}/{{ trid }}" METHOD="POST">
+            <div class="form-group">
+              <textarea id="message-text" name="message" placeholder="Send a message..." class="form-control" rows="3"></textarea>
+            </div>
+            <div class="btn-group widen">
+              <button type="submit" class="btn btn-green widen">Send</button>
+            </div>
+          </form>
+
         </div>
       </div>
 
