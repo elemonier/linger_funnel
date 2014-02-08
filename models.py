@@ -18,6 +18,14 @@ app = Flask(__name__)
 db = SQLAlchemy(app)
 
 
+def clean_number(num):
+	phone1 = ''.join(re.findall(r"(\d+)", num))
+	if len(phone1) == 10:
+		phone1 = phone1[1:]
+	if len(phone1) == 11:
+		phone1 = phone1[2:]
+	return phone1
+
 class User(db.Model):
 	''' User Class '''
 	__tablename__ = 'users'
@@ -42,7 +50,7 @@ class User(db.Model):
 		''' User constructor '''
 		
 		self.user_name = name
-		self.user_phone = phone	
+		self.user_phone = clean_number(phone)
 		self.user_email = email
 
 		self.user_encrypted_password = sha256_crypt.encrypt(password) #no encryption
@@ -88,13 +96,8 @@ class Contact(db.Model):
 
 	def __init__(self, name, phone1, email1): #implement kwargs for phone1, 2, or default to None?
 		''' Contact constructor '''
-		#selc.contact_phone_id = phone_id
-		#re.match('.*?([0-9]+)$', s).group(1)
-		phone1 = ''.join(re.findall(r"(\d+)", phone1))
-		if len(phone1) > 10:
-			phone1 = phone1[1:]
 		self.contact_name = name
-		self.contact_phone1 = phone1
+		self.contact_phone1 = clean_number(phone1)
 		self.contact_email1 = email1
 
 	def __repr__(self):
@@ -120,11 +123,8 @@ class InMessage(db.Model):
 
 	def __init__(self, contact_phone, content,thread, when_received): #contact, user ide?
 		''' InMessage Constructor '''
-		phone1 = ''.join(re.findall(r"(\d+)", contact_phone))
-		if len(phone1) > 10:
-			phone1 = phone1[1:]
-		self.inmessage_contact_phone = phone1
-		self.inmessage_when_received = when_received #may need to parse into datetime object
+		self.inmessage_contact_phone = clean_number(contact_phone)
+		self.inmessage_when_received = dt.datetime.fromtimestamp(float(when_received)/1000.).strftime('%Y-%m-%d %H:%M:%S') #may need to parse into datetime object
 		self.inmessage_content = content
 		self.inmessage_thread_id = thread
 
@@ -149,11 +149,8 @@ class OutMessage(db.Model):
 
 	def __init__(self, contact_phone, content, thread, when_sent): #contact, user ide?
 		''' OutMessage Constructor '''
-		phone1 = ''.join(re.findall(r"(\d+)", contact_phone))
-		if len(phone1) > 10:
-			phone1 = phone1[1:]
-		self.outmessage_contact_phone = phone1
-		self.outmessage_when_sent = when_sent
+		self.outmessage_contact_phone = clean_number(contact_phone)
+		self.outmessage_when_sent = dt.datetime.fromtimestamp(float(when_sent)/1000.).strftime('%Y-%m-%d %H:%M:%S')
 		self.outmessage_content = content
 		self.outmessage_thread_id = thread
 
