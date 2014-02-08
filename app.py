@@ -225,7 +225,7 @@ def show_contact_list(user_id):
 	user_instance = models.User.query.filter_by(user_id=user_id).first()
 	#if user doesn't exist, route to signup page
 	if user_instance is None:
-		return render_template("login.html", user_phone=user_phone, error="Phone number entered was invalid")
+		return render_template("login.html", error="User login session was invalid")
 
 	#only displaying if user exists...
 	#print 'user_instance', user_instance.user_id
@@ -239,7 +239,7 @@ def show_contact_list(user_id):
 	
 	#render template w/ contacts, messages in dictionary form
 	return render_template("contacts_dashboard.html", 
-							username= user_phone, 
+							username= user_instance.user_name, 
 							contacts = contact_list, 
 							inmessages = inmessages_list,
 							outmessages = outmessages_list)
