@@ -62,19 +62,23 @@ def logout():
 @app.route("/login", methods=["GET", "POST"])
 def login():
 	if request.method == "POST":
+		print 'POSTING LOGIN'
 		#find user by phone in db, confirm hash matches
 
-		currrent_user = models.User.query.filter_by(user_phone = request.form['username'])
+		current_user = models.User.query.filter_by(user_phone = request.form['username']).first()
 		#confirm hash matches
-		if not sha256_crypt.verify(request.form[''], current_user['password']):
+		print 'GET USER'
+		if not sha256_crypt.verify(request.form['password'], current_user.user_encrypted_password):
 			flash("Incorrect password")
+			print 'INCORRECT PASSWORD'
 			return render_template("login.html", user_phone = request.form['username'])
+		print 'CORRECT PASSWORD'
 		#in tbwa server/blue/admin.py
-		session['phone'] = current_user.user_phone
-		session['email'] = current_user.user_email
-		session['user_id'] = current_user.user_id
+		#session['phone'] = current_user.user_phone
+		#session['email'] = current_user.user_email
+		#session['user_id'] = current_user.user_id
 
-
+		print 'GOT THRU SESSION'
 		return redirect("/user/contacts/"+str(current_user.user_id))
 		#login + validate user
 	if request.method == "GET"	:
