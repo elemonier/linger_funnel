@@ -13,6 +13,7 @@ from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 import datetime as dt
 from passlib.hash import sha256_crypt
+import re
 app = Flask(__name__)
 db = SQLAlchemy(app)
 
@@ -88,6 +89,10 @@ class Contact(db.Model):
 	def __init__(self, name, phone1, email1): #implement kwargs for phone1, 2, or default to None?
 		''' Contact constructor '''
 		#selc.contact_phone_id = phone_id
+		#re.match('.*?([0-9]+)$', s).group(1)
+		phone1 = ''.join(re.findall(r"(\d+)", phone1))
+		if len(phone1) > 10:
+			phone1 = phone1[1:]
 		self.contact_name = name
 		self.contact_phone1 = phone1
 		self.contact_email1 = email1
@@ -113,16 +118,19 @@ class InMessage(db.Model):
 	inmessage_content = db.Column(db.String(400)) 				#make dynamic??
 	inmessage_thread_id = db.Column(db.Integer)					#number associated w/ convo btwn user, contact
 
-	def __init__(self, content, contact_phone, thead, when_received): #contact, user ide?
+	def __init__(self, contact_phone, content,thread, when_received): #contact, user ide?
 		''' InMessage Constructor '''
-		self.outmessage_contact_phone = contact_phone
+		phone1 = ''.join(re.findall(r"(\d+)", contact_phone))
+		if len(phone1) > 10:
+			phone1 = phone1[1:]
+		self.inmessage_contact_phone = phone1
 		self.inmessage_when_received = when_received #may need to parse into datetime object
 		self.inmessage_content = content
 		self.inmessage_thread_id = thread
 
 	def __repr__(self):
 		''' print objects of InMessage class '''
-		return "<Message: from='%s', content= '%s'>" % 'contact name?', inmessage_content
+		return "<Message: from='%s', content= '%s'>" % (self.inmessage_contact_phone, self.inmessage_content)
 
 class OutMessage(db.Model):
 	''' OutMessage Class '''
@@ -131,7 +139,6 @@ class OutMessage(db.Model):
 	
 	#attributes w/ relationship
 	outmessage_user = db.Column(db.Integer, db.ForeignKey('users.user_id')) #relationship w/ usr
-	#outmessage_contact_phone_id = db.Column(db.Integer, db.ForeignKey('contact.contact_phone_id'))
 	
 	#attribute
 	outmessage_id = db.Column(db.Integer, primary_key = True)
@@ -142,7 +149,10 @@ class OutMessage(db.Model):
 
 	def __init__(self, contact_phone, content, thread, when_sent): #contact, user ide?
 		''' OutMessage Constructor '''
-		self.outmessage_contact_phone = contact_phone
+		phone1 = ''.join(re.findall(r"(\d+)", contact_phone))
+		if len(phone1) > 10:
+			phone1 = phone1[1:]
+		self.outmessage_contact_phone = phone1
 		self.outmessage_when_sent = when_sent
 		self.outmessage_content = content
 		self.outmessage_thread_id = thread
@@ -150,4 +160,4 @@ class OutMessage(db.Model):
 
 	def __repr__(self):
 		''' print objects of OutMessage class '''
-		return "<OutMessage: from='%s', content= '%s'>" % 'contact name?', outmessage_content
+		return "<OutMessage: from='%s', content= '%s'>" % (self.outmessage_contact_phone, self.outmessage_content)
