@@ -306,6 +306,51 @@ def show_message_list():
 							username= user_instance.user_name, 
 							thread_name_dict = thread_name_dict)
 
+
+@models.app.route('/user/message/<phone_number>')
+def show_message(phone_number):
+	#query db for user info
+	if "user_id" not in session.keys():
+		return render_template("login.html", alert_title="Error: ", error="Not logged in")
+
+	user_instance = models.User.query.filter_by(user_id=session["user_id"]).first()
+	#if user doesn't exist, route to signup page
+	if user_instance is None:
+		return render_template("login.html", alert_title="Error: ", error="User login session was invalid")
+
+	#only displaying if user exists...
+	#current user
+	current_user = models.User.query.filter_by(user_id=session["user_id"]).first() #a user name
+
+	inmessages_list = list(user_instance.user_inmessages.all())
+	outmessages_list = list(user_instance.user_outmessages.all())
+
+	thread_list= list()
+	correspondent_name = None
+	contact = models.Contact.query.filter_by(contact_phone1=phone_number).first()
+	if contact:
+		correspondent_name = contact.contact_name
+	else:
+		correspondent_name = phone_number
+
+	for message in inmessages_list:
+		if message.inmessage_contact_phone == phone_number
+			thread_list.append(correspondent_name, message.inmessage_content, message.inmessage_when_received)
+
+	for message in outmessages_list:
+		if message.outmessage_contact_phone == phone_number
+			thread_list.append(correspondent_name, message.outmessage_content, message.outmessage_when_received)
+
+
+	sorted_thread_list = sorted(thread_list, key=lambda m: m[2])
+
+	
+	#render template w/ contacts, messages in dictionary form
+	return render_template("messages_dashboard.html", 
+							username = user_instance.user_name, 
+							correspondent_name = correspondent_name,
+							thread_list = sorted_thread_list)
+
 #twilio tests
 #@app.route("/user/<username_entry>/contact/compose_message") #compose message
 
