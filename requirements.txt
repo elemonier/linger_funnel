@@ -25,3 +25,4 @@ sqlalchemy-migrate==0.8.2
 ufw==0.31.1-1
 wsgiref==0.1.2
 twilio>=3.3.6
+passlib==1.6.2

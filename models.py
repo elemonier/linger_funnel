@@ -10,7 +10,7 @@ from sqlalchemy import Table, Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 import datetime as dt
-from passlib.hash       import sha256_crypt
+from passlib.hash import sha256_crypt
 
 
 class User(db.Model):
@@ -41,7 +41,7 @@ class User(db.Model):
 		self.user_phone = phone	
 		self.user_email = email
 
-		self.user_encrypted_password = password #no encryption
+		self.user_encrypted_password = sha256_crypt.encrypt(password) #no encryption
 
 		self.user_created_at = dt.datetime.now()
 		self.user_updated_at = dt.datetime.now()

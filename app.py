@@ -59,10 +59,12 @@ def login():
 
 	if form.validate_on_submit():
 		#login + validate user
-		login_user(user)
-		flash("Logged in successfully")
+		if not sha256_crypt.verify(password, db_admin['password']):
+			flash("Incorrect password")
+			return render_template("signup.html")
 		return redirect(request.args.get("next") or url_for("index"))
 	return render_template("login.html", form=form)
+	#successful login -> /user/<uder_id>
 #req.form[username]
 #post new row (if unique) to db
 
