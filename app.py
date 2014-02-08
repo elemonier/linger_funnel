@@ -44,14 +44,12 @@ def signup():
 
 @app.route("/app/contacts/<user_phone_number>")
 def update_contacts(user_phone_number):
-''' updates contacts for user associated w/ user_phone 
-	
-	1. deletes existing contacts assoc. w/ user_phone (unique)
-	2. adds all contacts from post to db
-	3. adds all contacts from post to current user's contact list
-	3. updates current user's user_updated_at (datetime obj.) to now
-
-'''
+	''' updates contacts for user associated w/ user_phone 
+		1. deletes existing contacts assoc. w/ user_phone (unique)
+		2. adds all contacts from post to db
+		3. adds all contacts from post to current user's contact list
+		3. updates current user's user_updated_at (datetime obj.) to now 
+	'''
 
 	contact_list = request.get_json(force = True) #list of contacts posted; Assumption: list of dictionaries.
 	current_user = models.User.query.filter_by(user_phone = user_phone_number).first()
@@ -64,11 +62,41 @@ def update_contacts(user_phone_number):
 	#add all new contacts to db + associate w/ user + commit
 	for contact in contact_list:
 		new_contact = models.Contact(
-			contact['contact_name']
-			contact['contact_phone1']
-			contact['contact_phone2']
-			contact['contact_email1']
+			contact['contact_name'],
+			contact['contact_phone1'],
+			contact['contact_phone2'],
+			contact['contact_email1'],
 			contact['contact_email2']
+			)
+		db.session.add(new_contact)
+		current_user.user_contacts.append(new_contact)
+
+	db.session.commit()
+	return render_template("login.html") #DUMMY RETURN
+
+#sender_name = my phone number
+#form of the timestamp.  
+#
+@app.route("/app/inmessages/<user_phone_number>")
+def update_inmessages(user_phone_number):
+	''' updates contacts for user associated w/ user_phone 
+		1. Grabs last time user updated
+		2. adds all messages from *now* to last time user updated
+
+	'''
+
+	message_list = request.get_json(force = True) #list of contacts posted; Assumption: list of dictionaries.
+	current_user = models.User.query.filter_by(user_phone = user_phone_number).first()
+	last_updated = current_user.user_updated_at
+
+	#add all new messages to db + associate w/ user + commit
+	for message in message_list:
+		new_message = models.InMessage(
+			message['contact_name'],
+			message['contact_phone1'],
+			message['contact_phone2'],
+			message['contact_email1'],
+			message['contact_email2']
 			)
 		db.session.add(new_contact)
 		current_user.user_contacts.append(new_contact)
@@ -123,10 +151,6 @@ def show_user_profile(username_entry):
 	contact_dict = user_instance.user_contacts.all() 
 	inmessages_dict = user_instance.user_inmessages.all()
 	outmessages_dict = user_instance.user_outmessages.all()
-
-	print 'USERNAME INSTANCE: ', user_instance
-	print 'CONTACT: ', contact_dict
-	print 'MESSAGES: ', inmessages_dict, outmessages_dict
 	
 	#render template w/ contacts, messages in dictionary form
 	return render_template("dashboard.html", 

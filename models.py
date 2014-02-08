@@ -96,7 +96,7 @@ class InMessage(db.Model):
 	
 	#attribute
 	inmessage_id = db.Column(db.Integer, primary_key = True)	#sequentially generated user id by db
-	inmessage_contact_phone = db.Column(db.String)				#same as a contact phone_number
+	inmessage_contact_phone = db.Column(db.String(64))				#same as a contact phone_number
 	inmessage_when_received = db.Column(db.DateTime) 			#I'm getting a long.
 	inmessage_content = db.Column(db.String(400)) 				#make dynamic??
 	inmessage_thread_id = db.Column(db.Integer)					#number associated w/ convo btwn user, contact
@@ -123,7 +123,7 @@ class OutMessage(db.Model):
 	
 	#attribute
 	outmessage_id = db.Column(db.Integer, primary_key = True)
-	outmessage_contact_phone = db.Column(db.String)	
+	outmessage_contact_phone = db.Column(db.String(64))	
 	outmessage_when_sent = db.Column(db.DateTime) #fucked up. should be sent
 	outmessage_content = db.Column(db.String(400))
 	outmessage_thread_id = db.Column(db.Integer)
