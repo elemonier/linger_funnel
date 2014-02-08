@@ -10,6 +10,8 @@ from sqlalchemy import Table, Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 import datetime as dt
+from passlib.hash       import sha256_crypt
+
 
 class User(db.Model):
 	''' User Class '''

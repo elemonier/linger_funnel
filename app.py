@@ -51,6 +51,9 @@ def signup():
 def login():
 	if request.method == "POST":
 		#find user by phone in db, confirm hash matches
+		currrent_user = models.User.query.filter_by(user_phone = request.form['username'])
+		#confirm hash matches
+
 		#in tbwa server/blue/admin.py
 		session
 
@@ -107,18 +110,23 @@ def update_inmessages(user_phone_number):
 	message_list = request.get_json(force = True) #list of contacts posted; Assumption: list of dictionaries.
 	current_user = models.User.query.filter_by(user_phone = user_phone_number).first()
 	last_updated = current_user.user_updated_at
+	time_delta = datetime.datetime.now() + datetime.timedelta(days=5)
 
 	#add all new messages to db + associate w/ user + commit
 	for message in message_list:
 		#contact_phone, content, thread, when_sent
-		new_message = models.InMessage(
-			message['phone'],
-			message['content'],
-			message['thread_id'],
-			message['when_receive']
-			)
-		db.session.add(new_contact)
-		current_user.user_contacts.append(new_contact)
+		#if datetime - message['when_sent'] < 5 days, add new_message
+		if time_delta > message['when_sent']:
+		#contact_phone, content, thread, when_sent
+		#if datetime - message['when_receive'] < 5 days, add new_message
+			new_message = models.InMessage(
+				message['phone'],
+				message['content'],
+				message['thread_id'],
+				message['when_receive']
+				)
+			db.session.add(new_message)
+			current_user.user_inmessages.append(new_message)
 
 	db.session.commit()
 	#return render_template("login.html") #DUMMY RETURN; get return to app browser
@@ -135,22 +143,24 @@ def update_outmessages(user_phone_number):
 	current_user = models.User.query.filter_by(user_phone = user_phone_number).first()
 	last_updated = current_user.user_updated_at
 
+	time_delta = datetime.datetime.now() + datetime.timedelta(days=5)
+
 	#add all new messages to db + associate w/ user + commit
 	for message in message_list:
 		#contact_phone, content, thread, when_sent
-		new_message = models.OutMessage(
-			message['phone'],
-			message['content'],
-			message['thread_id'],
-			message['when_receive']
-			)
-		db.session.add(new_contact)
-		current_user.user_contacts.append(new_contact)
-
+		#if datetime - message['when_sent'] < 5 days, add new_message
+		if time_delta > message['when_sent']:
+			new_message = models.OutMessage(
+				message['phone'],
+				message['content'],
+				message['thread_id'],
+				message['when_sent']
+				)
+			print new_message
+			db.session.add(new_message)
+			current_user.user_outmessages.append(new_message)
 	db.session.commit()
-	#return render_template("login.html") #DUMMY RETURN
-
-
+	#mreturn render_template("login.html") #DUMMY RETURN
 
 
 @app.route("/signup-submit", methods=["GET", "POST"])
