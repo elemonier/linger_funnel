@@ -14,24 +14,6 @@ models.app.secret_key = 'why would I tell you my secret key?'
 models.app.config.from_object('config.flask_config')
 #db = SQLAlchemy(app)
 
-#login manager
-# login_manager = LoginManager()
-#login_manager.init_app(app)
-
-# def check_db(userid):
-#      # query database (again), just so we can pass an object to the callback
-#      db_check = models.User.query.filter_by(user_id=userid).first()
-#      UserObject = UserClass(db_check['username'], userid, active=True)
-#      if userObject.id == userid:
-#           return UserObject
-#      else:
-#           return None
-
-# #reload user object from the user ID stored in session
-# @login_manager.user_loader
-# def load_user(id):
-#      return check_db(id)
-
 @models.app.route("/")
 def home():
 	return render_template("login.html")
