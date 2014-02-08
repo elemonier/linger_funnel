@@ -253,6 +253,13 @@ def show_contact_list(user_id):
 	#only displaying if user exists...
 	#print 'user_instance', user_instance.user_id
 	contact_list = user_instance.user_contacts.all() 
+	contact_dict = dict(
+		zip(
+		  	(models.Contact.contact_id, models.Contact),
+		  	(models for models in contact_list)
+		 )
+	)
+
 	inmessages_list = user_instance.user_inmessages.all()
 	outmessages_list = user_instance.user_outmessages.all()
 
@@ -263,7 +270,7 @@ def show_contact_list(user_id):
 	#render template w/ contacts, messages in dictionary form
 	return render_template("contacts_dashboard.html", 
 							username= user_instance.user_name, 
-							contacts = contact_list, 
+							contacts = contact_dict, 
 							inmessages = inmessages_list,
 							outmessages = outmessages_list)
 
