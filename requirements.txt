@@ -1,5 +1,6 @@
 Flask==0.10.1
 Flask-SQLAlchemy==1.0
+Flask-Login=0.2.9
 GnuPGInterface==0.3.2
 Jinja2==2.7.2
 MarkupSafe==0.18
