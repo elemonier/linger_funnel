@@ -40,8 +40,8 @@
       </div>
       <div class="navbar-collapse collapse">
         <ul class="nav navbar-nav">
-          <li class="active"><a href="/user/contacts"> {{ username }} </a></li>
-          <li><a href="/contacts">Contacts</a></li>
+          <li><a> {{ username }} </a></li>
+          <li><a href="/user/contacts">Contacts</a></li>
           <li class="active"><a href="/user/messages">Messages</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
@@ -56,27 +56,15 @@
       <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-blue text-center" id="contacts-panel">
           <div class="panel-heading">
-            <h3 class="panel-title">Contacts</h3>
+            <h3 class="panel-title">Messages</h3>
           </div>
-
           <div class="list-group">
-            <a href="#" class="list-group-item">
-              <h4 class="list-group-item-heading">William Falk-Wallace</h4>
+            {% for (contact_phone, contact_name) in thread_name_dict.iteritems() %}
+            <a href="/message/{{ contact_phone }}" class="list-group-item">
+              <h4 class="list-group-item-heading">{{ contact_name }}</h4>
             </a>
-            <a href="#" class="list-group-item">
-              <h4 class="list-group-item-heading">Andre-Jacques De Beer</h4>
-            </a>
-            <a href="#" class="list-group-item">
-              <h4 class="list-group-item-heading">Jusan Ng</h4>
-            </a>
-            <a href="#" class="list-group-item">
-              <h4 class="list-group-item-heading">Emilia Nastazja Pakulski</h4>
-            </a>
-            <a href="#" class="list-group-item">
-              <h4 class="list-group-item-heading">Henrique Maia</h4>
-            </a>
+            {% endfor %}
           </div>
-
         </div>
       </div>
 

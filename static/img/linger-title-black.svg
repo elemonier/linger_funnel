@@ -9,8 +9,8 @@
 	 overflow="visible" enable-background="new -25.09 -39.135 400 200" xml:space="preserve">
 <defs>
 	<style type="text/css">
-	  @import url(http://fonts.googleapis.com/css?family=Grand+Hotel);
-	  text { text-anchor: middle; font: 96px 'Grand Hotel'; text-rendering: geometricPrecision; }	  
+		@import url(http://fonts.googleapis.com/css?family=Grand+Hotel);
+		text { text-anchor: middle; font: 96px 'Grand Hotel'; text-rendering: geometricPrecision }	  
 	</style>
 </defs>
 <rect fill="none" width="350" height="100"/>
