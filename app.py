@@ -52,7 +52,6 @@ def login():
 	if request.method == "POST":
 		#find user by phone in db, confirm hash matches
 		#in tbwa server/blue/admin.py
-		session
 
 	if form.validate_on_submit():
 		#login + validate user
@@ -181,8 +180,8 @@ def contact():
 # 		return render_template("signup.html")
 
 #goal: add username entry from blah.
-@app.route('/user/<user_phone>')
-def show_user_profile(user_phone):
+@app.route('/user/<user_id>')
+def show_contact_list(user_id):
 	''' Show user profile of username, contacts, messages '''
 	#query db for user info
 	user_instance = models.User.query.filter_by(user_phone=user_phone).first()
