@@ -1,9 +1,10 @@
-from flask import Flask, jsonify, render_template, request, session
+from flask import Flask, jsonify, render_template, request, session, redirect
 from flask.ext.sqlalchemy import SQLAlchemy
 import requests, os, json, datetime
 import models
 from sqlalchemy import create_engine
 from flask.ext.login import LoginManager
+from passlib.hash import sha256_crypt
 
 app = Flask(__name__)
 app.debug = True
@@ -47,28 +48,42 @@ def signup():
 # route("/app/update")
 # here too as above
 
+#logout
+@app.route('/logout', methods=['POST'])
+def logout():
+
+    session.clear()
+    
+    return make_response(json.dumps({
+        'message': 'Logged out'
+    }), 200)
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
 	if request.method == "POST":
 		#find user by phone in db, confirm hash matches
+
 		currrent_user = models.User.query.filter_by(user_phone = request.form['username'])
 		#confirm hash matches
-
-		#in tbwa server/blue/admin.py
-		session
-
-	if form.validate_on_submit():
-		#login + validate user
-		if not sha256_crypt.verify(password, db_admin['password']):
+		if not sha256_crypt.verify(request.form[''], current_user['password']):
 			flash("Incorrect password")
-			return render_template("signup.html")
-		return redirect(request.args.get("next") or url_for("index"))
-	return render_template("login.html", form=form)
+			return render_template("login.html", user_phone = request.form['username'])
+		#in tbwa server/blue/admin.py
+		session['phone'] = current_user.user_phone
+		session['email'] = current_user.user_email
+		session['user_id'] = current_user.user_id
+
+		return redirect("/user/contacts/"+str(current_user.user_id))
+		#login + validate user
+	if request.method == "GET"	:
+		#return redirect(request.args.get("next") or url_for("index"))
+		return render_template("login.html")
 	#successful login -> /user/<uder_id>
 #req.form[username]
 #post new row (if unique) to db
 
-@app.route("/app/contacts/<user_phone_number>")
+@app.route("/app/contacts/<user_phone_number>", methods=["GET", "POST"])
 def update_contacts(user_phone_number):
 	''' updates contacts for user associated w/ user_phone 
 		1. deletes existing contacts assoc. w/ user_phone (unique)
@@ -76,26 +91,28 @@ def update_contacts(user_phone_number):
 		3. adds all contacts from post to current user's contact list
 		3. updates current user's user_updated_at (datetime obj.) to now 
 	'''
+	if request.method == "POST":
+		print 'POSTED TO'
+		contact_list = request.get_json(force = True) #list of contacts posted; Assumption: list of dictionaries.
+		current_user = models.User.query.filter_by(user_phone = user_phone_number).first()
+		
+		#delete all contacts associated w/ user_id
+		models.Contacts.query.filter_by(contact_user = username_entry.user_id).delete()
+		#sets user_updated_at (ie updated time) to now
+		current_user.user_updated_at = datetime.datetime.now()
 
-	contact_list = request.get_json(force = True) #list of contacts posted; Assumption: list of dictionaries.
-	current_user = models.User.query.filter_by(user_phone = user_phone_number).first()
-	
-	#delete all contacts associated w/ user_id
-	models.Contacts.query.filter_by(contact_user = username_entry.user_id).delete()
-	#sets user_updated_at (ie updated time) to now
-	current_user.user_updated_at = datetime.datetime.now()
+		#add all new contacts to db + associate w/ user + commit
+		for contact in contact_list:
+			new_contact = models.Contact(
+				contact['name'], #get out -'s'
+				contact['phone'],
+				contact['email']
+				)
+			db.session.add(new_contact)
+			current_user.user_contacts.append(new_contact)
 
-	#add all new contacts to db + associate w/ user + commit
-	for contact in contact_list:
-		new_contact = models.Contact(
-			contact['name'], #get out -'s'
-			contact['phone'],
-			contact['email']
-			)
-		db.session.add(new_contact)
-		current_user.user_contacts.append(new_contact)
+		db.session.commit()
 
-	db.session.commit()
 	return render_template("login.html") #DUMMY RETURN
 
 #sender_name = my phone number
