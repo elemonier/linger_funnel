@@ -58,14 +58,11 @@ def signup():
 # here too as above
 
 #logout
-@models.app.route('/logout', methods=['POST'])
+@models.app.route('/logout')
 def logout():
-
     session.clear()
     
-    return make_response(json.dumps({
-        'message': 'Logged out'
-    }), 200)
+    return render_template("login.html", alert_title="Success: ", error="logged out")
 
 
 @models.app.route("/login", methods=["GET", "POST"])
@@ -78,11 +75,14 @@ def login():
 		if not sha256_crypt.verify(request.form['password'], current_user.user_encrypted_password):
 			return render_template("login.html", user_phone = request.form['username'], error = "Incorrect Password")
 		#in tbwa server/blue/admin.py
-		session['phone'] = current_user.user_phone
-		session['email'] = current_user.user_email
-		session['user_id'] = current_user.user_id
 
-		return redirect("/user/contacts/"+str(current_user.user_id))
+		#session['phone'] = current_user.user_phone
+		#session['email'] = current_user.user_email
+
+		session['user_id'] = current_user.user_id
+		print session['user_id']
+		return redirect("/user/contacts")
+
 		#login + validate user
 	if request.method == "GET"	:
 		#return redirect(request.args.get("next") or url_for("index"))
@@ -255,31 +255,74 @@ def contact():
 # 		return render_template("signup.html")
 
 #goal: add username entry from blah.
-@models.app.route('/user/contacts/<user_id>')
-def show_contact_list(user_id):
+@models.app.route('/user/contacts')
+def show_contact_list():
 	''' Show user profile of username, contacts, messages '''
 	#query db for user info
-	user_instance = models.User.query.filter_by(user_id=user_id).first()
+	if "user_id" not in session.keys():
+		return render_template("login.html", alert_title="Error: ", error="Not logged in")
+
+	user_instance = models.User.query.filter_by(user_id=session["user_id"]).first()
 	#if user doesn't exist, route to signup page
 	if user_instance is None:
-		return render_template("login.html", error="User login session was invalid")
+		return render_template("login.html", alert_title="Error: ", error="User login was invalid")
 
 	#only displaying if user exists...
 	#print 'user_instance', user_instance.user_id
-	contact_list = user_instance.user_contacts.all() 
-	inmessages_list = user_instance.user_inmessages.all()
-	outmessages_list = user_instance.user_outmessages.all()
-
-	# print 'USERNAME INSTANCE: ', user_instance
-	# print 'CONTACT: ', contact_dict
-	# print 'MESSAGES: ', inmessages_dict, outmessages_dict
+	contact_list = list(user_instance.user_contacts.all())
+	contact_list = sorted(contact_list, key=lambda c: c.contact_name)
+	#contact_dict = dict((c.contact_id, c) for c in contact_list)
 	
 	#render template w/ contacts, messages in dictionary form
 	return render_template("contacts_dashboard.html", 
 							username= user_instance.user_name, 
-							contacts = contact_list, 
-							inmessages = inmessages_list,
-							outmessages = outmessages_list)
+							contacts = contact_list)
+
+@models.app.route('/user/messages')
+def show_message_list():
+	''' Show user profile of username, contacts, messages '''
+	#query db for user info
+	if "user_id" not in session.keys():
+		return render_template("login.html", alert_title="Error: ", error="Not logged in")
+
+	user_instance = models.User.query.filter_by(user_id=session["user_id"]).first()
+	#if user doesn't exist, route to signup page
+	if user_instance is None:
+		return render_template("login.html", alert_title="Error: ", error="User login session was invalid")
+
+	#only displaying if user exists...
+	#current user
+	current_user = models.User.query.filter_by(user_id=session["user_id"]).first() #a user name
+	current_contacts = current_user.user_contacts.all()
+	current_inmessages = current_user.user_inmessages.all()
+	current_outmessages = current_user.user_outmessages.all()
+
+	inmessages_list = list(user_instance.user_inmessages.all())
+	outmessages_list = list(user_instance.user_outmessages.all())
+
+	threads = set()
+
+	for message in inmessages_list:
+		threads.add(message.inmessage_contact_phone)
+	for message in outmessages_list:
+		threads.add(message.outmessage_contact_phone)
+
+	thread_phone_list = list(threads)
+
+	thread_name_dict = dict()
+	for thread_phone in thread_phone_list:
+		contact = models.Contact.query.filter_by(contact_phone1=thread_phone).first()
+		if contact:
+			thread_name_dict[thread_phone] = contact.contact_name
+		else:
+			thread_name_dict[thread_phone] = thread_phone
+
+	print thread_name_dict
+	
+	#render template w/ contacts, messages in dictionary form
+	return render_template("messages_dashboard.html", 
+							username= user_instance.user_name, 
+							thread_name_dict = thread_name_dict)
 
 #twilio tests
 #@app.route("/user/<username_entry>/contact/compose_message") #compose message

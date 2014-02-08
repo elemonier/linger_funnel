@@ -40,10 +40,9 @@
       </div>
       <div class="navbar-collapse collapse">
         <ul class="nav navbar-nav">
-          <li class="active"><a href="/user/{{ username }}"> {{ username }} </a></li>
-          <li><a href="/contacts">Contacts</a></li>
-          <li><a href="/messages">Messages</a></li>
-          <li><a href="/settings">Settings</a></li>
+          <li><a> {{ username }} </a></li>
+          <li class="active"><a href="/user/contacts">Contacts</a></li>
+          <li><a href="/user/messages">Messages</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
           <li class="bg-red"><a class="no-bg" href="/logout">Logout</a></li>
@@ -54,62 +53,21 @@
 
   <div id="content">
     <div class="container push-down">
-      <div class="row">
-        <div class="col-md-4 col-md-offset-2">
-          <div class="panel panel-default" id="contacts-panel">
-            <div class="panel-heading">
-              <h3 class="panel-title text-center">Contacts</h3>
-            </div>
-
-            <div class="list-group">
-              <a href="#" class="list-group-item">
-                <h4 class="list-group-item-heading">William Falk-Wallace</h4>
-              </a>
-              <a href="#" class="list-group-item">
-                <h4 class="list-group-item-heading">Andre-Jacques De Beer</h4>
-              </a>
-              <a href="#" class="list-group-item">
-                <h4 class="list-group-item-heading">Jusan Ng</h4>
-              </a>
-              <a href="#" class="list-group-item">
-                <h4 class="list-group-item-heading">Emilia Nastazja Pakulski</h4>
-              </a>
-              <a href="#" class="list-group-item">
-                <h4 class="list-group-item-heading">Henrique Maia</h4>
-              </a>
-            </div>
-
-
-
+      <div class="col-md-6 col-md-offset-3">
+        <div class="panel panel-blue text-center" id="contacts-panel">
+          <div class="panel-heading">
+            <h3 class="panel-title">Contacts</h3>
           </div>
-        </div>
-        <div class="col-md-4">
-          <div class="panel panel-default" id="messages-panel">
-            <div class="panel-heading">
-              <h3 class="panel-title text-center">Messages</h3>
-            </div>
-
-            <div class="list-group">
-              <a href="#" class="list-group-item">
-                <span class="badge">14</span>
-                <h4 class="list-group-item-heading">William Falk-Wallace</h4>
-                <p class="list-group-item-text">(800) 555-5555</p>
-              </a>
-              <a href="#" class="list-group-item">
-                <span class="badge">4</span>
-                <h4 class="list-group-item-heading">Henrique Maia</h4>
-                <p class="list-group-item-text">(800) 555-5555</p>
-              </a>
-              <a href="#" class="list-group-item">
-                <span class="badge">6</span>
-                <h4 class="list-group-item-heading">Emilia Pakulski</h4>
-                <p class="list-group-item-text">(800) 555-5555</p>
-              </a>
-            </div>
-
+          <div class="list-group">
+            {% for contact in contacts %}
+            <a href="#" class="list-group-item">
+              <h4 class="list-group-item-heading">{{ contact.contact_name }}</h4>
+            </a>
+            {% endfor %}
           </div>
         </div>
       </div>
+
     </div>
 
     <footer class="text-center">
@@ -126,8 +84,8 @@
 
   <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
     ga('create', 'UA-21231537-6', 'linger.io');
