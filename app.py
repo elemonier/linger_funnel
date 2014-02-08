@@ -39,8 +39,8 @@ def individual_contact_view(contact_id):
 	current_contact = models.Contact.query.filter_by(contact_id = contact_id).first()
 	return render_template("contact_view.html", 
 		contact_name = current_contact.contact_name,
-		user_phone = current_contact.contact_phone1,
-		user_email = current_contact.contact_email1
+		contact_phone = current_contact.contact_phone1,
+		contact_email = current_contact.contact_email1
 		)
 
 # route("/app/register", post)
