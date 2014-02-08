@@ -27,7 +27,7 @@ def clean_number(num):
 	return phone1
 
 def check_when_sent(when_sent):
-	if type(when_sent) is datetime.datetime:
+	if type(when_sent) is dt.datetime:
 		return when_sent
 	if type(when_sent) is long:
 		when_sent = dt.datetime.fromtimestamp(float(when_sent)/1000.).strftime('%Y-%m-%d %H:%M:%S')
