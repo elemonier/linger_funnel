@@ -5,12 +5,16 @@ Purpose: Outline ORM for User, Contact, InMessage, OutMessage Objects
 Too add: relationships
 '''
 
-from app import db
+#from app import db
+from flask import Flask, jsonify, render_template, request, session, redirect, flash
+from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy import Table, Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 import datetime as dt
 from passlib.hash import sha256_crypt
+app = Flask(__name__)
+db = SQLAlchemy(app)
 
 
 class User(db.Model):
@@ -32,7 +36,6 @@ class User(db.Model):
 	
 	user_created_at = db.Column(db.DateTime, index = True)							#date/time user registered
 	user_updated_at = db.Column(db.DateTime, index = True)							#date/time last updated contacts
-	
 
 	def __init__(self, name, email, phone, password):
 		''' User constructor '''
@@ -56,14 +59,15 @@ class User(db.Model):
 			self.user_email, 
 			str(self.user_created_at)
 			)
+	def get_id(self):
+		return unicode(self.user_id)
 # def is_authenticated(self):
  #        return True
  #    def is_active(self):
  #        return True
  #    def is_anonymous(self):
  #        return False
- #    def get_id(self):
- #        return unicode(self.user_id)
+
 
 
 class Contact(db.Model):
@@ -81,7 +85,7 @@ class Contact(db.Model):
 	contact_email1 = db.Column(db.String(64), unique = True)				
 
 
-	def __init__(self, name, phone_id, phone1, email1): #implement kwargs for phone1, 2, or default to None?
+	def __init__(self, name, phone1, email1): #implement kwargs for phone1, 2, or default to None?
 		''' Contact constructor '''
 		#selc.contact_phone_id = phone_id
 		self.contact_name = name
@@ -90,7 +94,7 @@ class Contact(db.Model):
 
 	def __repr__(self):
 		''' Print objects of Contact class'''
-		return "<Contact name= '%s', user_id= '%s' "% (self.contact_name, self.contact_user)
+		return "<Contact name= '%s', user_phone= '%s' >"% (self.contact_name, self.contact_phone1)
 
 #contact name....AAHAHAYSGWVWk
 class InMessage(db.Model):
@@ -104,7 +108,7 @@ class InMessage(db.Model):
 	
 	#attribute
 	inmessage_id = db.Column(db.Integer, primary_key = True)	#sequentially generated user id by db
-	inmessage_contact_phone = db.Column(db.String(20))				#same as a contact phone_number
+	inmessage_contact_phone = db.Column(db.String(20))			#same as a contact phone_number
 	inmessage_when_received = db.Column(db.DateTime) 			#I'm getting a long.
 	inmessage_content = db.Column(db.String(400)) 				#make dynamic??
 	inmessage_thread_id = db.Column(db.Integer)					#number associated w/ convo btwn user, contact
