@@ -131,68 +131,74 @@ def update_contacts(user_phone_number):
 #sender_name = my phone number
 #form of the timestamp.  
 #
-@models.app.route("/app/inmessages/<user_phone_number>")
+@models.app.route("/app/inmessages/<user_phone_number>", methods=["POST"])
 def update_inmessages(user_phone_number):
 	''' updates contacts for user associated w/ user_phone 
 		1. Grabs last time user updated
 		2. adds all messages from *now* to last time user updated
 
 	'''
-
-	message_list = request.get_json(force = True) #list of contacts posted; Assumption: list of dictionaries.
+	print "POST DEM FUCKING INMESSAGES"
+	message_list = json.loads(request.data.decode('utf-8', 'ignore')) #list of contacts posted; Assumption: list of dictionaries.
 	current_user = models.User.query.filter_by(user_phone = user_phone_number).first()
 	last_updated = current_user.user_updated_at
 	time_delta = datetime.datetime.now() + datetime.timedelta(days=5)
 
+	
 	#add all new messages to db + associate w/ user + commit
 	for message in message_list:
+		print message
+		print "PHONE NUMBER: ", message['phoneNumberAddress']
 		#contact_phone, content, thread, when_sent
 		#if datetime - message['when_sent'] < 5 days, add new_message
-		if time_delta > message['when_sent']:
+		#if time_delta > message['when_sent']:
 		#contact_phone, content, thread, when_sent
 		#if datetime - message['when_receive'] < 5 days, add new_message
-			new_message = models.InMessage(
-				message['phone'],
-				message['content'],
-				message['thread_id'],
-				message['when_receive']
-				)
-			models.db.session.add(new_message)
-			current_user.user_inmessages.append(new_message)
+		new_message = models.InMessage(
+			message['phoneNumberAddress'],
+			message['content'],
+			int(message['threadId']),
+			message['dateSent']
+			)
+		models.db.session.add(new_message)
+		current_user.user_inmessages.append(new_message)
 
 	models.db.session.commit()
+	return render_template("login.html") #DUMMY RETURN
 	#return render_template("login.html") #DUMMY RETURN; get return to app browser
 
-@models.app.route("/app/outmessages/<user_phone_number>")
+@models.app.route("/app/outmessages/<user_phone_number>", methods=["POST"])
 def update_outmessages(user_phone_number):
 	''' updates contacts for user associated w/ user_phone 
 		1. Grabs last time user updated
 		2. adds all messages from *now* to last time user updated
 
 	'''
-
-	message_list = request.get_json(force = True) #list of contacts posted; Assumption: list of dictionaries.
+	print "POST DEM FUCKING OUTMESSAGES"
+	message_list = json.loads(request.data.decode('utf-8', 'ignore'))#list of contacts posted; Assumption: list of dictionaries.
 	current_user = models.User.query.filter_by(user_phone = user_phone_number).first()
 	last_updated = current_user.user_updated_at
 
-	time_delta = datetime.datetime.now() + datetime.timedelta(days=5)
+	time_delta = datetime.datetime.now() - datetime.timedelta(days=5)
 
 	#add all new messages to db + associate w/ user + commit
 	for message in message_list:
+		print message
+		print "PHONE NUMBER: ", message['phoneNumberAddress']
 		#contact_phone, content, thread, when_sent
 		#if datetime - message['when_sent'] < 5 days, add new_message
-		if time_delta > message['when_sent']:
-			new_message = models.OutMessage(
-				message['phone'],
-				message['content'],
-				message['thread_id'],
-				message['when_sent']
-				)
-			print new_message
-			models.db.session.add(new_message)
-			current_user.user_outmessages.append(new_message)
+		#if time_delta > message['dateSent']:
+		new_message = models.OutMessage(
+			message['phoneNumberAddress'],
+			message['content'],
+			int(message['threadId']),
+			message['dateSent']
+			)
+		print new_message
+		models.db.session.add(new_message)
+		current_user.user_outmessages.append(new_message)
 	models.db.session.commit()
-	#mreturn render_template("login.html") #DUMMY RETURN
+	return render_template("login.html") #DUMMY RETURN
 
 
 @models.app.route("/signup-submit", methods=["GET", "POST"])
