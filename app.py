@@ -16,6 +16,14 @@ models.app.secret_key = 'why would I tell you my secret key?'
 models.app.config.from_object('config.flask_config')
 #db = SQLAlchemy(app)
 
+##make pretty phone function
+def make_pretty_phone(pretty_phone):
+	if len(pretty_phone) == 10:
+		return '('+pretty_phone[0:3]+') - '+pretty_phone[3:6]+' - '+pretty_phone[6:]
+	if len(pretty_phone) == 7:
+		return pretty_phone[3:6]+'-'+pretty_phone[6:]
+	return pretty_phone
+
 @models.app.route("/")
 def home():
 	return render_template("login.html")
@@ -33,6 +41,19 @@ def signup():
 		print 'signup-get'
 		return render_template("signup.html")
 
+@models.app.route("/user/contact/<contact_id>", methods=["GET", "POST"])
+def individual_contact_view(contact_id):
+	if "user_id" not in session.keys():
+		return render_template("login.html", alert_title="Error: ", error="Not logged in")
+	#query for contact info
+	current_contact = models.Contact.query.filter_by(contact_id = contact_id).first()
+	pretty_phone = make_pretty_phone(current_contact.contact_phone1)
+
+	return render_template("contact_view.html", 
+		contact_name = current_contact.contact_name,
+		contact_phone = pretty_phone,
+		contact_email = current_contact.contact_email1
+		)
 
 # route("/app/register", post)
 # request.JSONPARSINGLIBHERE
@@ -87,6 +108,7 @@ def update_contacts(user_phone_number):
 		print 'POSTED TO'
 		#print request.data
 		print request.headers
+		user_phone_number = models.clean_number(user_phone_number)
 		#contact_list = json.loads(request.data)#request.get_json(force = True) #list of contacts posted; Assumption: list of dictionaries.
 		contact_list = json.loads(request.data.decode('utf-8', 'ignore'))
 		print 'CONTACT_LIST', contact_list
@@ -123,6 +145,7 @@ def update_inmessages(user_phone_number):
 
 	'''
 	print "POST DEM FUCKING INMESSAGES"
+	user_phone_number = models.clean_number(user_phone_number)
 	message_list = json.loads(request.data.decode('utf-8', 'ignore')) #list of contacts posted; Assumption: list of dictionaries.
 	current_user = models.User.query.filter_by(user_phone = user_phone_number).first()
 	last_updated = current_user.user_updated_at
@@ -159,6 +182,7 @@ def update_outmessages(user_phone_number):
 
 	'''
 	print "POST DEM FUCKING OUTMESSAGES"
+	user_phone_number = models.clean_number(user_phone_number)
 	message_list = json.loads(request.data.decode('utf-8', 'ignore'))#list of contacts posted; Assumption: list of dictionaries.
 	current_user = models.User.query.filter_by(user_phone = user_phone_number).first()
 	last_updated = current_user.user_updated_at
@@ -308,7 +332,6 @@ def show_message_list():
 							username= user_instance.user_name, 
 							thread_name_dict = thread_name_dict)
 
-
 @models.app.route('/user/message/<phone_number>')
 def show_message(phone_number):
 	#query db for user info
@@ -384,10 +407,11 @@ def send_message(trid, phone):
 	else: # request.method == "GET"
 		return redirect("/user/message/" + str(phone))
 
+#
 
 @models.app.errorhandler(404)
 def page_not_found(error):
-    return render_template("404.html"), 404
+	return render_template("404.html"), 404
 
 
 if __name__ == "__main__":
