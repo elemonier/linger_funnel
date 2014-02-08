@@ -37,9 +37,11 @@ def individual_contact_view(contact_id):
 		return render_template("login.html", alert_title="Error: ", error="Not logged in")
 	#query for contact info
 	current_contact = models.Contact.query.filter_by(contact_id = contact_id).first()
+	pretty_phone = make_pretty_phone(current_contact.contact_phone1)
+
 	return render_template("contact_view.html", 
 		contact_name = current_contact.contact_name,
-		contact_phone = current_contact.contact_phone1,
+		contact_phone = pretty_phone,
 		contact_email = current_contact.contact_email1
 		)
 
@@ -320,6 +322,13 @@ def show_message_list():
 #twilio tests
 #@app.route("/user/<username_entry>/contact/compose_message") #compose message
 
+##make pretty phone function
+def make_pretty_phone(pretty_phone):
+	if len(pretty_phone) == 10:
+		return '('+pretty_phone[0:3]+') - '+pretty_phone[3:6]+' - '+pretty_phone[6:]
+	if len(pretty_phone) == 7:
+		return pretty_phone[3:6]+'-'+pretty_phone[6:]
+	return pretty_phone
 
 @models.app.errorhandler(404)
 def page_not_found(error):
