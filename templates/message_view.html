@@ -40,61 +40,60 @@
       </div>
       <div class="navbar-collapse collapse">
         <ul class="nav navbar-nav">
-          <li><a href="/">Home</a></li>
-          <li><a href="/about">About</a></li>
-          <li class="active"><a href="/contact">Contact</a></li>
+          <li><a> {{ username }} </a></li>
+          <li><a href="/user/contacts">Contacts</a></li>
+          <li class="active"><a href="/user/messages">Messages</a></li>
         </ul>
-        <form class="navbar-form navbar-right" action="/signup" method="post">
-          <div class="form-group">
-            <input type="email" name="register_email" placeholder="Email" class="form-control">
-          </div>
-          <button type="submit" class="btn btn-green">Sign up</button>
-        </form>
+        <ul class="nav navbar-nav navbar-right">
+          <li class="bg-red"><a class="no-bg" href="/logout">Logout</a></li>
+        </ul>
       </div><!--/.navbar-collapse -->
     </div>
   </div>
 
   <div id="content">
     <div class="container push-down">
-
-      <div class="row">
-        <div class="col-md-6 col-md-offset-3">
-          <div class="col-heading">
-            <h3 class="col-title">Contact us</h3>
+      <div class="col-md-6 col-md-offset-3">
+        <div class="panel panel-blue" id="contacts-panel">
+          <div class="panel-heading">
+            <h3 class="panel-title">{{ correspondent_name }}</h3>
           </div>
-          <form role="form" action="mailto:linger@googlegroups.gmail.com?Subject=Linger Support" METHOD="POST">
+          <div class="list-group">
+
+            {% for (name, content, timestamp) in thread_list %}
+            <a class="list-group-item">
+              <h4 class="list-group-item-heading {% if name == correspondent_name %}text-right{% endif %}">{% if name == correspondent_name %}<span class="text-muted small">{{ timestamp }} - </span>{% endif %}{{ name }}{% if name != correspondent_name %}<span class="text-muted small"> - {{ timestamp }}</span>{% endif %}</h4>
+              <p class="{% if name == correspondent_name %}text-right{% endif %}"> {{ content }} </p>
+            </a>
+            {% endfor %}
+
+
+            <span class="text-muted"> {{ timestamp }} </span>
+
+
+          </div>
+
+          <form role="form" action="/user/send/{{ phone }}/{{ trid }}" METHOD="POST">
             <div class="form-group">
-              <label class="sr-only" for="contact-name">Name</label>
-              <input type="text" class="form-control" name="body" id="contact-name" placeholder="Name">
-            </div>
-            <div class="form-group">
-              <label class="sr-only" for="contact-phone">Phone</label>
-              <input type="tel" class="form-control" name="body" id="contact-phone" placeholder="Phone" required>
-            </div>
-            <div class="form-group">
-              <label class="sr-only" for="contact-email">Email*</label>
-              <input type="email" class="form-control" id="contact-email" placeholder="Email*" required>
-            </div>
-            <div class="form-group">
-              <label class="sr-only" for="contact-comments">Comments</label>
-              <textarea id="contact-comments" name="body" placeholder="Comments" class="form-control" rows="3"></textarea>
+              <textarea id="message-text" name="message" placeholder="Send a message..." class="form-control" rows="3"></textarea>
             </div>
             <div class="btn-group widen">
-              <button type="submit" class="btn btn-green widen">Submit</button>
+              <button type="submit" class="btn btn-green widen">Send</button>
             </div>
           </form>
+
         </div>
       </div>
 
     </div>
 
     <footer class="text-center">
-      <p>&copy; Linger 2014 | <a href="/signup">Sign Up</a></p>
+      <p>&copy; Linger 2014 | <a href="/about">About</a> | <a href="/contact">Contact us</a></p>
     </footer>
   </div>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-  <script>window.jQuery || document.write('<script src="/static/js/vendor/jquery-1.10.1.min.js"><\/script>')</script>
+  <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.1.min.js"><\/script>')</script>
 
   <script src="/static/js/vendor/bootstrap.min.js"></script>
 

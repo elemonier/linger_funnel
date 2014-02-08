@@ -5,6 +5,8 @@ import models
 from sqlalchemy import create_engine
 from flask.ext.login import LoginManager
 from passlib.hash import sha256_crypt
+from twilio.rest import TwilioRestClient
+import twilio.twiml
 
 # app = Flask(__name__)
 models.app.debug = True
@@ -43,11 +45,15 @@ def signup():
 def individual_contact_view(contact_id):
 	if "user_id" not in session.keys():
 		return render_template("login.html", alert_title="Error: ", error="Not logged in")
+
+	current_user = models.User.query.filter_by(user_id = session["user_id"]).first()
+
 	#query for contact info
 	current_contact = models.Contact.query.filter_by(contact_id = contact_id).first()
 	pretty_phone = make_pretty_phone(current_contact.contact_phone1)
 
 	return render_template("contact_view.html", 
+		username = current_user.user_name,
 		contact_name = current_contact.contact_name,
 		contact_phone = pretty_phone,
 		contact_email = current_contact.contact_email1
@@ -226,7 +232,7 @@ def signup_submit():
 			print new_user
 			models.db.session.add(new_user)
 			models.db.session.commit()
-			return render_template("signupsuccess.html", signup_email=request.form["register_email"])
+			return render_template("login.html", alert_title="Success: ", error="you've registered your account!")
 		else:
 			#TO DO: print 'password incorrect?'
 			return render_template("signup.html")
@@ -332,31 +338,80 @@ def show_message_list():
 							username= user_instance.user_name, 
 							thread_name_dict = thread_name_dict)
 
-#compose a new message + send
-@models.app.route('/user/send')
-def send_message():
-	#post form from message_view.html, form['content']
-	#do twilio call; send to twilio.
-	account_sid = "AC4af5afa9493c929ff6b172231bcb274e" 	#unique acct. number
-	auth_token  = "c63cfa0c93070b639fc554e125120689"	#password
-	client = TwilioRestClient(account_sid, auth_token)
-	message = client.sms.messages.create(body=enter_msg,
-		to="+19176859971",    # Replace with your phone number
-		from_="+13474296373") # Replace with your Twilio number
-	return "MESSAGE SENT VIEW"
+@models.app.route('/user/message/<phone_number>')
+def show_message(phone_number):
+	#query db for user info
+	if "user_id" not in session.keys():
+		return render_template("login.html", alert_title="Error: ", error="Not logged in")
+
+	user_instance = models.User.query.filter_by(user_id=session["user_id"]).first()
+	#if user doesn't exist, route to signup page
+	if user_instance is None:
+		return render_template("login.html", alert_title="Error: ", error="User login session was invalid")
+
+	#only displaying if user exists...
+	#current user
+	current_user = models.User.query.filter_by(user_id=session["user_id"]).first() #a user name
+
+	inmessages_list = list(user_instance.user_inmessages.all())
+	outmessages_list = list(user_instance.user_outmessages.all())
+
+	thread_list= list()
+	correspondent_name = None
+	contact = models.Contact.query.filter_by(contact_phone1=phone_number).first()
+	if contact:
+		correspondent_name = contact.contact_name
+	else:
+		correspondent_name = phone_number
+
+	trid = None
+
+	for message in inmessages_list:
+		if message.inmessage_contact_phone == phone_number:
+			thread_list.append((correspondent_name, message.inmessage_content, message.inmessage_when_received))
+			trid = message.inmessage_thread_id
+
+	for message in outmessages_list:
+		if message.outmessage_contact_phone == phone_number:
+			thread_list.append((user_instance.user_name, message.outmessage_content, message.outmessage_when_sent))
 
 
-# 
-# #@app.route("/user/<username_entry>/contact/compose_message") #compose message
-#if request.method == "POST":
-#	new_msg = request.form['content']
-#	account_sid = "AC4af5afa9493c929ff6b172231bcb274e" 	#unique acct. number
-#	auth_token  = "c63cfa0c93070b639fc554e125120689"	#password
-#	client = TwilioRestClient(account_sid, auth_token)
-#		message = client.sms.messages.create(body=enter_msg,
-#	    to="+19176859971",    # Replace with your phone number
-#	    from_="+13474296373") # Replace with your Twilio number
-#	return "it works"
+	sorted_thread_list = sorted(thread_list, key=lambda m: m[2])
+
+	
+	#render template w/ contacts, messages in dictionary form
+	return render_template("message_view.html", 
+							username = user_instance.user_name, 
+							correspondent_name = correspondent_name,
+							thread_list = sorted_thread_list,
+							phone = phone_number,
+							trid=trid)
+
+#TODO add trid
+@models.app.route('/user/send/<phone>/<trid>', methods=["GET", "POST"])
+def send_message(trid, phone):
+	if request.method == "POST":
+		current_user = models.User.query.filter_by(user_id = session["user_id"]).first()
+		msg = request.form['message']
+
+		# Your Account Sid and Auth Token from twilio.com/user/account
+		# Twilio stuff
+		account_sid = "AC135efa5813678821d410a3f1c2b6b4ea"
+		auth_token  = "4a13d969633f34fe7b8c3c789bba22af"
+		client = TwilioRestClient(account_sid, auth_token)
+		message = client.sms.messages.create(body="("+current_user.user_name+"): " + msg,
+										    to=str(phone),    # Replace with your phone number
+										    from_="+19177461939") # Replace with your Twilio number
+
+		out = models.OutMessage(phone, msg, int(trid), datetime.datetime.now())
+		models.db.session.add(out)
+		current_user.user_outmessages.append(out)
+		models.db.session.commit()
+
+		return redirect("/user/message/" + str(phone))
+
+	else: # request.method == "GET"
+		return redirect("/user/message/" + str(phone))
 
 #
 
