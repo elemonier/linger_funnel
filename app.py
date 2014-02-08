@@ -45,11 +45,15 @@ def signup():
 def individual_contact_view(contact_id):
 	if "user_id" not in session.keys():
 		return render_template("login.html", alert_title="Error: ", error="Not logged in")
+
+	current_user = models.User.query.filter_by(user_id = session["user_id"]).first()
+
 	#query for contact info
 	current_contact = models.Contact.query.filter_by(contact_id = contact_id).first()
 	pretty_phone = make_pretty_phone(current_contact.contact_phone1)
 
 	return render_template("contact_view.html", 
+		username = current_user.user_name,
 		contact_name = current_contact.contact_name,
 		contact_phone = pretty_phone,
 		contact_email = current_contact.contact_email1
