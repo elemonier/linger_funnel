@@ -48,9 +48,17 @@ def signup():
 # route("/app/update")
 # here too as above
 
-# route("/login", post)
-# req.form[username]
-# post new row (if unique) to db
+@app.route("/login", methods=["GET", "POST"])
+def login():
+	form = LoginForm()
+	if form.validate_on_submit():
+		#login + validate user
+		login_user(user)
+		flash("Logged in successfully")
+		return redirect(request.args.get("next") or url_for("index"))
+	return render_template("login.html", form=form)
+#req.form[username]
+#post new row (if unique) to db
 
 @app.route("/app/contacts/<user_phone_number>")
 def update_contacts(user_phone_number):

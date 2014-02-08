@@ -56,6 +56,14 @@ class User(db.Model):
 			self.user_email, 
 			str(self.user_created_at)
 			)
+# def is_authenticated(self):
+ #        return True
+ #    def is_active(self):
+ #        return True
+ #    def is_anonymous(self):
+ #        return False
+ #    def get_id(self):
+ #        return unicode(self.user_id)
 
 
 class Contact(db.Model):
