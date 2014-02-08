@@ -147,9 +147,6 @@ footer {
 .navbar-blue .navbar-nav > li > a :hover {
   background-color: #5B9A8F;
 }
-.navbar-blue .navbar-toggle {
-  border-color: #FFF;
-}
 .navbar-blue .navbar-toggle:hover,
 .navbar-blue .navbar-toggle:focus {
   background-color: #5B9A8F;
