@@ -82,11 +82,9 @@ def update_contacts(user_phone_number):
 	#add all new contacts to db + associate w/ user + commit
 	for contact in contact_list:
 		new_contact = models.Contact(
-			contact['contact_name'],
-			contact['contact_phone1'],
-			contact['contact_phone2'],
-			contact['contact_email1'],
-			contact['contact_email2']
+			contact['name'], #get out -'s'
+			contact['phone'],
+			contact['email']
 			)
 		db.session.add(new_contact)
 		current_user.user_contacts.append(new_contact)

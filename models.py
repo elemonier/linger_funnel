@@ -23,11 +23,10 @@ class User(db.Model):
 	#attributes
 	user_id = db.Column(db.Integer, primary_key = True, unique = True) 				#sequentially generated user id
 	user_name = db.Column(db.String(64), index = True)								#user's physical name
-	user_phone = db.Column(db.String(64), index = True, unique = True)				#user's phone number
+	user_phone = db.Column(db.String(20), index = True, unique = True)				#user's phone number
 	user_email = db.Column(db.String(64), index = True, unique = True)				#user's email
 
-	user_encrypted_password = db.Column(db.String(64), index = True, unique = True)
-	user_salt = db.Column(db.String(64), index = True, unique = True)
+	user_encrypted_password = db.Column(db.String(500), index = True, unique = True)
 	
 	user_created_at = db.Column(db.DateTime, index = True)							#date/time user registered
 	user_updated_at = db.Column(db.DateTime, index = True)							#date/time last updated contacts
@@ -41,7 +40,6 @@ class User(db.Model):
 		self.user_email = email
 
 		self.user_encrypted_password = password #no encryption
-		self.user_salt = password 				#no encryption
 
 		self.user_created_at = dt.datetime.now()
 		self.user_updated_at = dt.datetime.now()
@@ -77,7 +75,7 @@ class Contact(db.Model):
 	contact_id = db.Column(db.Integer, primary_key = True)	#sequentially generated user id by db
 	#contact_phone_id = db.Column(db.Integer, unique = True)	#android phone's uniquely generated id assoc. w/ contact
 	contact_name = db.Column(db.String(64))					
-	contact_phone1 = db.Column(db.String(64), unique = True)				
+	contact_phone1 = db.Column(db.String(20), unique = True)				
 	contact_email1 = db.Column(db.String(64), unique = True)				
 
 
@@ -104,7 +102,7 @@ class InMessage(db.Model):
 	
 	#attribute
 	inmessage_id = db.Column(db.Integer, primary_key = True)	#sequentially generated user id by db
-	inmessage_contact_phone = db.Column(db.String(64))				#same as a contact phone_number
+	inmessage_contact_phone = db.Column(db.String(20))				#same as a contact phone_number
 	inmessage_when_received = db.Column(db.DateTime) 			#I'm getting a long.
 	inmessage_content = db.Column(db.String(400)) 				#make dynamic??
 	inmessage_thread_id = db.Column(db.Integer)					#number associated w/ convo btwn user, contact
@@ -131,7 +129,7 @@ class OutMessage(db.Model):
 	
 	#attribute
 	outmessage_id = db.Column(db.Integer, primary_key = True)
-	outmessage_contact_phone = db.Column(db.String(64))	
+	outmessage_contact_phone = db.Column(db.String(20))	
 	outmessage_when_sent = db.Column(db.DateTime) #fucked up. should be sent
 	outmessage_content = db.Column(db.String(400))
 	outmessage_thread_id = db.Column(db.Integer)
