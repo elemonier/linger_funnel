@@ -31,6 +31,17 @@ def signup():
 		print 'signup-get'
 		return render_template("signup.html")
 
+@models.app.route("/user/contact/<contact_id>", methods=["GET", "POST"])
+def individual_contact_view(contact_id):
+	if "user_id" not in session.keys():
+		return render_template("login.html", alert_title="Error: ", error="Not logged in")
+	#query for contact info
+	current_contact = models.Contact.query.filter_by(contact_id = contact_id).first()
+	return render_template("contact_view.html", 
+		contact_name = current_contact.contact_name,
+		user_phone = current_contact.contact_phone1,
+		user_email = current_contact.contact_email1
+		)
 
 # route("/app/register", post)
 # request.JSONPARSINGLIBHERE
