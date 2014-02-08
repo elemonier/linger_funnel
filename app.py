@@ -4,6 +4,7 @@ from sqlalchemy.orm import sessionmaker
 import requests, os, json, datetime
 import models
 from sqlalchemy import create_engine
+from flask.ext.login import LoginManager
 
 app = Flask(__name__)
 app.debug = True
@@ -11,6 +12,10 @@ app.debug = True
 #app.config['SQLALCHEMY_ECHO'] = True
 app.config.from_object('config.flask_config')
 db = SQLAlchemy(app)
+
+#login manager
+login_manager = LoginManager()
+login_manager.init_app(app)
 
 
 @app.route("/")
