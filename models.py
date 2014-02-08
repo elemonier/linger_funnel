@@ -30,7 +30,7 @@ def check_when_sent(when_sent):
 	if type(when_sent) is dt.datetime:
 		return when_sent
 	if type(when_sent) is long:
-		return when_sent = dt.datetime.fromtimestamp(float(when_sent)/1000.).strftime('%Y-%m-%d %H:%M:%S')
+		return dt.datetime.fromtimestamp(float(when_sent)/1000.).strftime('%Y-%m-%d %H:%M:%S')
 	#return when_sent
 class User(db.Model):
 	''' User Class '''
