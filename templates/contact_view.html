@@ -59,11 +59,15 @@
             <h3 class="panel-title">Contact: </h3>
           </div>
           <div class="list-group">
-            {% for contact in contacts %}
             <a href="#" class="list-group-item">
               <h4 class="list-group-item-heading">{{ contact.contact_name }}</h4>
             </a>
-            {% endfor %}
+            <a href="callto:{{ phone number }}" class="list-group-item">
+              <h4 class="list-group-item-heading">{{ contact.contact_name }}</h4>
+            </a>
+            <a href="mailto:{{ email }}" class="list-group-item">
+              <h4 class="list-group-item-heading">{{ contact.contact_name }}</h4>
+            </a>
           </div>
         </div>
       </div>
