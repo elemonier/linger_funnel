@@ -110,18 +110,46 @@ def update_inmessages(user_phone_number):
 
 	#add all new messages to db + associate w/ user + commit
 	for message in message_list:
+		#contact_phone, content, thread, when_sent
 		new_message = models.InMessage(
-			message['contact_name'],
-			message['contact_phone1'],
-			message['contact_phone2'],
-			message['contact_email1'],
-			message['contact_email2']
+			message['phone'],
+			message['content'],
+			message['thread_id'],
+			message['when_receive']
 			)
 		db.session.add(new_contact)
 		current_user.user_contacts.append(new_contact)
 
 	db.session.commit()
-	return render_template("login.html") #DUMMY RETURN
+	#return render_template("login.html") #DUMMY RETURN; get return to app browser
+
+@app.route("/app/outmessages/<user_phone_number>")
+def update_outmessages(user_phone_number):
+	''' updates contacts for user associated w/ user_phone 
+		1. Grabs last time user updated
+		2. adds all messages from *now* to last time user updated
+
+	'''
+
+	message_list = request.get_json(force = True) #list of contacts posted; Assumption: list of dictionaries.
+	current_user = models.User.query.filter_by(user_phone = user_phone_number).first()
+	last_updated = current_user.user_updated_at
+
+	#add all new messages to db + associate w/ user + commit
+	for message in message_list:
+		#contact_phone, content, thread, when_sent
+		new_message = models.OutMessage(
+			message['phone'],
+			message['content'],
+			message['thread_id'],
+			message['when_receive']
+			)
+		db.session.add(new_contact)
+		current_user.user_contacts.append(new_contact)
+
+	db.session.commit()
+	#return render_template("login.html") #DUMMY RETURN
+
 
 
 
