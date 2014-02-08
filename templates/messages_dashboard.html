@@ -60,7 +60,7 @@
           </div>
           <div class="list-group">
             {% for (contact_phone, contact_name) in thread_name_dict.iteritems() %}
-            <a href="/message/{{ contact_phone }}" class="list-group-item">
+            <a href="/user/message/{{ contact_phone }}" class="list-group-item">
               <h4 class="list-group-item-heading">{{ contact_name }}</h4>
             </a>
             {% endfor %}
