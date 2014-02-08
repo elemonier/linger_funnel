@@ -194,3 +194,12 @@ footer {
     line-height: 2em;
   }
 }
+.panel-blue > .panel-heading {
+  color: #fff;
+  background-color: #5b9a8f;
+}
+.panel,
+.panel-heading {
+  border-radius: 0;
+  border: 0;
+}

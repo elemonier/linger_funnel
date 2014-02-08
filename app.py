@@ -74,6 +74,7 @@ def login():
 		session['email'] = current_user.user_email
 		session['user_id'] = current_user.user_id
 
+
 		return redirect("/user/contacts/"+str(current_user.user_id))
 		#login + validate user
 	if request.method == "GET"	:
@@ -236,14 +237,14 @@ def contact():
 # 		return render_template("signup.html")
 
 #goal: add username entry from blah.
-@app.route('/user/<user_phone>')
-def show_user_profile(user_phone):
+@app.route('/user/contacts/<user_id>')
+def show_contact_list(user_id):
 	''' Show user profile of username, contacts, messages '''
 	#query db for user info
-	user_instance = models.User.query.filter_by(user_phone=user_phone).first()
+	user_instance = models.User.query.filter_by(user_id=user_id).first()
 	#if user doesn't exist, route to signup page
 	if user_instance is None:
-		return render_template("login.html", user_phone=user_phone, error="Phone number entered was invalid")
+		return render_template("login.html", error="User login session was invalid")
 
 	#only displaying if user exists...
 	#print 'user_instance', user_instance.user_id
@@ -256,11 +257,11 @@ def show_user_profile(user_phone):
 	# print 'MESSAGES: ', inmessages_dict, outmessages_dict
 	
 	#render template w/ contacts, messages in dictionary form
-	return render_template("dashboard.html", 
-		username= user_phone, 
-		contacts = contact_list, 
-		inmessages = inmessages_list,
-		outmessages = outmessages_list)
+	return render_template("contacts_dashboard.html", 
+							username= user_instance.user_name, 
+							contacts = contact_list, 
+							inmessages = inmessages_list,
+							outmessages = outmessages_list)
 
 #twilio tests
 #@app.route("/user/<username_entry>/contact/compose_message") #compose message
