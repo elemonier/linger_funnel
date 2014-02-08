@@ -339,7 +339,7 @@ def show_message(phone_number):
 
 	for message in outmessages_list:
 		if message.outmessage_contact_phone == phone_number:
-			thread_list.append((correspondent_name, message.outmessage_content, message.outmessage_when_sent))
+			thread_list.append((user_instance.user_name, message.outmessage_content, message.outmessage_when_sent))
 
 
 	sorted_thread_list = sorted(thread_list, key=lambda m: m[2])
