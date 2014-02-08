@@ -18,6 +18,11 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 
+#reload user object from the user ID stored in session
+@login_manager.user_loader 
+def load_user(userid):
+    return models.User.get(int(userid))
+
 @app.route("/")
 def login():
 	return render_template("login.html")
