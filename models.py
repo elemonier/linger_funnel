@@ -99,14 +99,14 @@ class InMessage(db.Model):
 	inmessage_contact_phone = db.Column(db.String)				#same as a contact phone_number
 	inmessage_when_received = db.Column(db.DateTime) 			#I'm getting a long.
 	inmessage_content = db.Column(db.String(400)) 				#make dynamic??
-	inmessage_thread = db.Column(db.Integer)					#number associated w/ convo btwn user, contact
+	inmessage_thread_id = db.Column(db.Integer)					#number associated w/ convo btwn user, contact
 
 	def __init__(self, content, contact_phone, thead, when_received): #contact, user ide?
 		''' InMessage Constructor '''
 		self.outmessage_contact_phone = contact_phone
 		self.inmessage_when_received = when_received #may need to parse into datetime object
 		self.inmessage_content = content
-		self.inmessage_thread = thread
+		self.inmessage_thread_id = thread
 
 	def __repr__(self):
 		''' print objects of InMessage class '''
@@ -126,14 +126,14 @@ class OutMessage(db.Model):
 	outmessage_contact_phone = db.Column(db.String)	
 	outmessage_when_sent = db.Column(db.DateTime) #fucked up. should be sent
 	outmessage_content = db.Column(db.String(400))
-	outmessage_thread = db.Column(db.Integer)
+	outmessage_thread_id = db.Column(db.Integer)
 
 	def __init__(self, contact_phone, content, thread, when_sent): #contact, user ide?
 		''' OutMessage Constructor '''
 		self.outmessage_contact_phone = contact_phone
 		self.outmessage_when_sent = when_sent
 		self.outmessage_content = content
-		self.outmessage_thread = thread
+		self.outmessage_thread_id = thread
 
 
 	def __repr__(self):
