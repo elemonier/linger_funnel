@@ -20,18 +20,19 @@ db = SQLAlchemy(app)
 
 def clean_number(num):
 	phone1 = ''.join(re.findall(r"(\d+)", num))
-	if len(phone1) == 10:
+	if len(phone1) == 11:
 		phone1 = phone1[1:]
 	if len(phone1) == 11:
 		phone1 = phone1[2:]
 	return phone1
 
 def check_when_sent(when_sent):
+	print 'when_SENT: ', when_sent
 	if type(when_sent) is dt.datetime:
 		return when_sent
 	if type(when_sent) is long:
 		return dt.datetime.fromtimestamp(float(when_sent)/1000.).strftime('%Y-%m-%d %H:%M:%S')
-	#return when_sent
+	return dt.datetime.now()
 class User(db.Model):
 	''' User Class '''
 	__tablename__ = 'users'
@@ -129,6 +130,7 @@ class InMessage(db.Model):
 
 	def __init__(self, contact_phone, content,thread, when_received): #contact, user ide?
 		''' InMessage Constructor '''
+		#when_received = check_when_sent(when_received)
 		self.inmessage_contact_phone = clean_number(contact_phone)
 		self.inmessage_when_received = dt.datetime.fromtimestamp(float(when_received)/1000.).strftime('%Y-%m-%d %H:%M:%S') #may need to parse into datetime object
 		self.inmessage_content = content
