@@ -1,3 +1,3 @@
 Linger.io
 =========
-Columbia devfest 2014
+Funnel page for Linger for DSTE
