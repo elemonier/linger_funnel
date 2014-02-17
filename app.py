@@ -1,8 +1,8 @@
 from flask import Flask, jsonify, render_template, request, session, redirect, flash, config
+import requests
 from configuration import API_USER, API_KEY
 
 app = Flask(__name__)
-app.config.from_object('config.flask_config')
 app.debug = True
 
 @app.route("/index", methods=["GET", "POST"])
@@ -49,6 +49,9 @@ def mail():
 		msg = {}
 
 		print request.form['name']
+		print request.form['phone']
+		print request.form['email']
+		print request.form['comments']
 
 		msg['api_user'] = API_USER
 		msg['api_key'] = API_KEY

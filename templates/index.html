@@ -27,33 +27,90 @@
   <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
   <![endif]-->
 
+  <div class="container">
+    {% if error %}
+    <div class="alert alert-success alert-dismissable">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      <strong>{{ alert_title }}</strong> {{ error }}
+    </div>
+    {% endif %}
 
-  <div class="row">
-    <div class="col-md-6 col-md-offset-3">
-      <div class="col-heading">
-        <h3 class="col-title">Contact us</h3>
+    <div class="row">
+      <div class="col-md-8">
+        <div class="well text-center">
+          <img class="logo" src="/static/img/linger-title-black.svg" alt="logo">
+          <p>
+            Thank you for the interest! We're currently still in beta, so sign up and we'll keep you posted on our progress and Linger's launch!
+          </p>
+        </div>
       </div>
-      <form role="form" action="/signup" METHOD="POST">
-        <div class="form-group">
-          <label class="sr-only" for="contact-name">Name</label>
-          <input type="text" class="form-control" name="body" id="contact-name" placeholder="Name">
+
+      <div class="col-md-4">
+        <div class="well">
+          <div class="col-heading">
+            <h3 class="col-title">Contact us</h3>
+          </div>
+          <form role="form" action="/signup" METHOD="POST">
+            <div class="form-group">
+              <label class="sr-only" for="contact-name">Name</label>
+              <input type="text" class="form-control" name="name" id="contact-name" placeholder="Name">
+            </div>
+            <div class="form-group">
+              <label class="sr-only" for="contact-phone">Phone</label>
+              <input type="tel" class="form-control" name="phone" id="contact-phone" placeholder="Phone" required>
+            </div>
+            <div class="form-group">
+              <label class="sr-only" for="contact-email">Email*</label>
+              <input type="email" class="form-control" id="email" name = "email" placeholder="Email*" required>
+            </div>
+            <div class="form-group">
+              <label class="sr-only" for="contact-comments">Comments</label>
+              <textarea id="contact-comments" name="comments" placeholder="Comments" class="form-control" rows="3"></textarea>
+            </div>
+            <div class="btn-group widen">
+              <button type="submit" class="btn btn-green widen">Submit</button>
+            </div>
+          </form>
         </div>
-        <div class="form-group">
-          <label class="sr-only" for="contact-phone">Phone</label>
-          <input type="tel" class="form-control" name="body" id="contact-phone" placeholder="Phone" required>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-8">
+        <div class="container text-center">
+          <div id="about-carousel" class="carousel slide" data-ride="carousel">
+            <!-- Wrapper for slides -->
+            <div class="carousel-inner">
+              <div class="item active">
+                <h3>
+                  Linger backs up your contact list and messages so you can view them on any device
+                </h3>
+              </div>
+              <div class="item">
+                <h3>
+                  Contacts and messages are automatically backed up when your phone battery drops below 5%.
+                </h3>
+                <h3>
+                  Access <a href="http://linger.io">linger.io</a> from any phone or computer.
+                </h3>
+              </div>
+              <div class="item">
+                <h3>
+                  Access all your contacts and messages from anyone's phone.
+                </h3>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="form-group">
-          <label class="sr-only" for="contact-email">Email*</label>
-          <input type="email" class="form-control" id="contact-email" placeholder="Email*" required>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <div class="container">
+          <!-- DEMO -->
         </div>
-        <div class="form-group">
-          <label class="sr-only" for="contact-comments">Comments</label>
-          <textarea id="contact-comments" name="body" placeholder="Comments" class="form-control" rows="3"></textarea>
-        </div>
-        <div class="btn-group widen">
-          <button type="submit" class="btn btn-green widen">Submit</button>
-        </div>
-      </form>
+      </div>
     </div>
   </div>
 
