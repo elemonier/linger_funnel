@@ -6,10 +6,11 @@ app.config.from_object('config.flask_config')
 app.debug = True
 
 @app.route("/index", methods=["GET", "POST"])
-def mail():
-	print 'IN MAIL'
+def signup():
+	if request.method == 'GET':	
+		print 'IN MAIL 1'
 	if request.method == "POST":
-
+		print 'IN MAIL 2'
 		url = "https://api.sendgrid.com/api/mail.send.json"
 		msg = {}
 
@@ -23,6 +24,7 @@ def mail():
 					"\ncomments: " + request.form['comments']
 
 		msg['from'] = "lingerio@googlegroups.com"
+		print 'msg: ', msg
 		response = requests.post(url, msg)	#error template
 
 		print 'SIGNUP EMAIL SENT'
@@ -37,18 +39,35 @@ def mail():
 def home():
 	return render_template("index.html")
 
-
-
 @app.route("/signup", methods=["GET", "POST"])
-def signup():
+def mail():
+	if request.method == "GET":
+		print 'GET SIGNUP'
 	if request.method == "POST":
-		print 'signup-post'
-		return render_template("signup.html", signup_email=request.form["register_email"])
-	else: # request.method == "GET"
-		print 'signup-get'
-		return render_template("signup.html")
 
+		url = "https://api.sendgrid.com/api/mail.send.json"
+		msg = {}
 
+		print request.form['name']
+
+		msg['api_user'] = API_USER
+		msg['api_key'] = API_KEY
+		msg['to'] = "lingerio@googlegroups.com" 
+		msg['subject'] = "LINGER CONTACT"	
+		msg['text'] = "name: " + request.form['name'] + \
+					"\nphone: " + request.form['phone'] + \
+					"\nemail: " + request.form['email'] + \
+					"\ncomments: " + request.form['comments']
+		print 'here 2'
+		print 'before post 1'
+		msg['from'] = "lingerio@googlegroups.com"
+		print 'before post'
+		response = requests.post(url, msg)	#error template
+
+		print 'SIGNUP EMAIL SENT'
+		return redirect("/")
+	else:
+		return redirect("/")
 
 
 @app.route("/signup-submit", methods=["GET", "POST"])
