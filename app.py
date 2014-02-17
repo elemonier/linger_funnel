@@ -1,33 +1,31 @@
 from flask import Flask, jsonify, render_template, request, session, redirect, flash, config
-#from config import API_USER, API_KEY
-
-API_USER = 'wfalkwallace'
-API_KEY = 'wingit'
+from configuration import API_USER, API_KEY
 
 app = Flask(__name__)
 app.config.from_object('config.flask_config')
 app.debug = True
 
-
 @app.route("/index", methods=["GET", "POST"])
 def mail():
+	print 'IN MAIL'
 	if request.method == "POST":
 
 		url = "https://api.sendgrid.com/api/mail.send.json"
 		msg = {}
 
-		msg['api_user'] = API_USER #move to config
+		msg['api_user'] = API_USER
 		msg['api_key'] = API_KEY
-		msg['to'] = "lingerio@googlegroups.com" #go to linger.io.googlegroups
-		msg['subject'] = "LINGER CONTACT"	#change to us.
+		msg['to'] = "lingerio@googlegroups.com" 
+		msg['subject'] = "LINGER CONTACT"	
 		msg['text'] = "name: " + request.form['name'] + \
 					"\nphone: " + request.form['phone'] + \
 					"\nemail: " + request.form['email'] + \
 					"\ncomments: " + request.form['comments']
 
-		msg['from'] = "lingerio@googlegroups.com"	#lingergoogle groups
+		msg['from'] = "lingerio@googlegroups.com"
 		response = requests.post(url, msg)	#error template
 
+		print 'SIGNUP EMAIL SENT'
 		return redirect("/")
 	else:
 		return redirect("/")
@@ -38,6 +36,7 @@ def mail():
 @app.route("/")
 def home():
 	return render_template("index.html")
+
 
 
 @app.route("/signup", methods=["GET", "POST"])
