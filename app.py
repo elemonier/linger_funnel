@@ -1,38 +1,42 @@
 from flask import Flask, jsonify, render_template, request, session, redirect, flash
-from flask.ext.sqlalchemy import SQLAlchemy
-import requests, os, json, datetime
-import models
-from sqlalchemy import create_engine
-from flask.ext.login import LoginManager
-from passlib.hash import sha256_crypt
-from twilio.rest import TwilioRestClient
-import twilio.twiml
+
 
 # app = Flask(__name__)
-models.app.debug = True
-models.app.secret_key = 'why would I tell you my secret key?'
+app.debug = True
 
-#app.config['SQLALCHEMY_ECHO'] = True
-models.app.config.from_object('config.flask_config')
-#db = SQLAlchemy(app)
 
-##make pretty phone function
-def make_pretty_phone(pretty_phone):
-	if len(pretty_phone) == 10:
-		return '('+pretty_phone[0:3]+') - '+pretty_phone[3:6]+' - '+pretty_phone[6:]
-	if len(pretty_phone) == 7:
-		return pretty_phone[3:6]+'-'+pretty_phone[6:]
-	return pretty_phone
+@app.route("/contact/mail", methods=["GET", "POST"])
+def mail():
+	if request.method == "POST":
 
-@models.app.route("/")
+		url = "https://api.sendgrid.com/api/mail.send.json"
+		msg = {}
+
+		msg['api_user'] = "wfalkwallace"
+		msg['api_key'] = "wingit"
+		msg['to'] = "wfalkwallace@gmail.com"
+		msg['subject'] = "WING IT CONTACT"
+		msg['text'] = "name: " + request.form['name'] + \
+					"\nphone: " + request.form['phone'] + \
+					"\nemail: " + request.form['email'] + \
+					"\ncomments: " + request.form['comments']
+
+		msg['from'] = "support@wingitwith.us"
+		response = requests.post(url, msg)
+
+		return redirect("/")
+	else:
+		return redirect("/")
+
+
+
+
+@app.route("/")
 def home():
 	return render_template("login.html")
 
-@models.app.route("/about")
-def about():
-	return render_template("about.html")
 
-@models.app.route("/signup", methods=["GET", "POST"])
+@app.route("/signup", methods=["GET", "POST"])
 def signup():
 	if request.method == "POST":
 		print 'signup-post'
@@ -41,178 +45,7 @@ def signup():
 		print 'signup-get'
 		return render_template("signup.html")
 
-@models.app.route("/user/contact/<contact_id>", methods=["GET", "POST"])
-def individual_contact_view(contact_id):
-	if "user_id" not in session.keys():
-		return render_template("login.html", alert_title="Error: ", error="Not logged in")
 
-	current_user = models.User.query.filter_by(user_id = session["user_id"]).first()
-
-	#query for contact info
-	current_contact = models.Contact.query.filter_by(contact_id = contact_id).first()
-	pretty_phone = make_pretty_phone(current_contact.contact_phone1)
-
-	return render_template("contact_view.html", 
-		username = current_user.user_name,
-		contact_name = current_contact.contact_name,
-		contact_phone = pretty_phone,
-		contact_email = current_contact.contact_email1
-		)
-
-# route("/app/register", post)
-# request.JSONPARSINGLIBHERE
-# build contact/message info json into object, see if it's in db. add if not
-
-# route("/app/update")
-# here too as above
-
-#logout
-@models.app.route('/logout')
-def logout():
-    session.clear()
-    
-    return render_template("login.html", alert_title="Success: ", error="logged out")
-
-
-@models.app.route("/login", methods=["GET", "POST"])
-def login():
-	if request.method == "POST":
-		#find user by phone in db, confirm hash matches
-
-		current_user = models.User.query.filter_by(user_phone = request.form['username']).first()
-		#confirm hash matches
-		if not sha256_crypt.verify(request.form['password'], current_user.user_encrypted_password):
-			return render_template("login.html", user_phone = request.form['username'], error = "Incorrect Password")
-		#in tbwa server/blue/admin.py
-
-		#session['phone'] = current_user.user_phone
-		#session['email'] = current_user.user_email
-
-		session['user_id'] = current_user.user_id
-		print session['user_id']
-		return redirect("/user/contacts")
-
-		#login + validate user
-	if request.method == "GET"	:
-		#return redirect(request.args.get("next") or url_for("index"))
-		return render_template("login.html")
-	#successful login -> /user/<uder_id>
-#req.form[username]
-#post new row (if unique) to db
-
-@models.app.route("/app/contacts/<user_phone_number>", methods=["GET", "POST"])
-def update_contacts(user_phone_number):
-	''' updates contacts for user associated w/ user_phone 
-		1. deletes existing contacts assoc. w/ user_phone (unique)
-		2. adds all contacts from post to db
-		3. adds all contacts from post to current user's contact list
-		3. updates current user's user_updated_at (datetime obj.) to now 
-	'''
-	if request.method == "POST":
-		print 'POSTED TO'
-		#print request.data
-		print request.headers
-		user_phone_number = models.clean_number(user_phone_number)
-		print 'user_phone_number', user_phone_number
-		#contact_list = json.loads(request.data)#request.get_json(force = True) #list of contacts posted; Assumption: list of dictionaries.
-		contact_list = json.loads(request.data.decode('utf-8', 'ignore'))
-		print 'CONTACT_LIST', contact_list
-		current_user = models.User.query.filter_by(user_phone = user_phone_number).first()
-		print 'USER GOT.', current_user
-		#delete all contacts associated w/ user_id
-		models.Contact.query.filter_by(contact_user_id = current_user.user_id).delete()
-		#sets user_updated_at (ie updated time) to now
-		current_user.user_updated_at = datetime.datetime.now()
-
-		#add all new contacts to db + associate w/ user + commit
-		for contact in contact_list:
-			new_contact = models.Contact(
-				contact['name'], #get out -'s'
-				contact['phoneNumber'],
-				contact['emailAddress']
-				)
-			models.db.session.add(new_contact)
-			print new_contact
-			current_user.user_contacts.append(new_contact)
-
-		models.db.session.commit()
-
-	return render_template("login.html") #DUMMY RETURN
-
-#sender_name = my phone number
-#form of the timestamp.  
-#
-@models.app.route("/app/inmessages/<user_phone_number>", methods=["POST"])
-def update_inmessages(user_phone_number):
-	''' updates contacts for user associated w/ user_phone 
-		1. Grabs last time user updated
-		2. adds all messages from *now* to last time user updated
-
-	'''
-	print "POST DEM FUCKING INMESSAGES"
-	user_phone_number = models.clean_number(user_phone_number)
-	print 'user_phone_number', user_phone_number
-	message_list = json.loads(request.data.decode('utf-8', 'ignore')) #list of contacts posted; Assumption: list of dictionaries.
-	current_user = models.User.query.filter_by(user_phone = user_phone_number).first()
-	last_updated = current_user.user_updated_at
-	time_delta = datetime.datetime.now() + datetime.timedelta(days=5)
-
-	
-	#add all new messages to db + associate w/ user + commit
-	for message in message_list:
-		print message
-		print "PHONE NUMBER: ", message['phoneNumberAddress']
-		#contact_phone, content, thread, when_sent
-		#if datetime - message['when_sent'] < 5 days, add new_message
-		#if time_delta > message['when_sent']:
-		#contact_phone, content, thread, when_sent
-		#if datetime - message['when_receive'] < 5 days, add new_message
-		new_message = models.InMessage(
-			message['phoneNumberAddress'],
-			message['content'],
-			int(message['threadId']),
-			message['dateSent']
-			)
-		models.db.session.add(new_message)
-		current_user.user_inmessages.append(new_message)
-
-	models.db.session.commit()
-	return render_template("login.html") #DUMMY RETURN
-	#return render_template("login.html") #DUMMY RETURN; get return to app browser
-
-@models.app.route("/app/outmessages/<user_phone_number>", methods=["POST"])
-def update_outmessages(user_phone_number):
-	''' updates contacts for user associated w/ user_phone 
-		1. Grabs last time user updated
-		2. adds all messages from *now* to last time user updated
-
-	'''
-	print "POST DEM FUCKING OUTMESSAGES"
-	user_phone_number = models.clean_number(user_phone_number)
-	message_list = json.loads(request.data.decode('utf-8', 'ignore'))#list of contacts posted; Assumption: list of dictionaries.
-	current_user = models.User.query.filter_by(user_phone = user_phone_number).first()
-	last_updated = current_user.user_updated_at
-
-	time_delta = datetime.datetime.now() - datetime.timedelta(days=5)
-
-	#add all new messages to db + associate w/ user + commit
-	for message in message_list:
-		print message
-		print "PHONE NUMBER: ", message['phoneNumberAddress']
-		#contact_phone, content, thread, when_sent
-		#if datetime - message['when_sent'] < 5 days, add new_message
-		#if time_delta > message['dateSent']:
-		new_message = models.OutMessage(
-			message['phoneNumberAddress'],
-			message['content'],
-			int(message['threadId']),
-			message['dateSent']
-			)
-		print new_message
-		models.db.session.add(new_message)
-		current_user.user_outmessages.append(new_message)
-	models.db.session.commit()
-	return render_template("login.html") #DUMMY RETURN
 
 
 @models.app.route("/signup-submit", methods=["GET", "POST"])
@@ -240,180 +73,6 @@ def signup_submit():
 		print 'signupsubmit-post'
 		return render_template("signup.html")
 
-@models.app.route("/contact")
-def contact():
-	return render_template("contact.html")
-
-# @app.route("/login", methods=["GET", "POST"])
-# def login():
-# 	if request.method == "POST":
-# 		print 'signupsubmit-post'
-# 		# add method to get elements from post and push to db.
-# 		# js alert? homepage?
-# 		#check equal passwords
-# 		if request.form['signup-pass1'] == request.form['signup-pass1']:
-# 			new_user = models.User(
-# 					request.form['signup-name'], 
-# 					request.form['signup-email'], 
-# 					request.form['signup-phone'],
-# 					request.form['signup-pass1'])
-# 			print new_user
-# 			db.session.add(new_user)
-# 			db.session.commit()
-# 			return render_template("signupsuccess.html", signup_email=request.form["register_email"])
-# 		else:
-# 			#TO DO: print 'password incorrect?'
-# 			return render_template("signup.html")
-# 	else: # request.method == "GET"
-# 		print 'signupsubmit-post'
-# 		return render_template("signup.html")
-
-#goal: add username entry from blah.
-@models.app.route('/user/contacts')
-def show_contact_list():
-	''' Show user profile of username, contacts, messages '''
-	#query db for user info
-	if "user_id" not in session.keys():
-		return render_template("login.html", alert_title="Error: ", error="Not logged in")
-
-	user_instance = models.User.query.filter_by(user_id=session["user_id"]).first()
-	#if user doesn't exist, route to signup page
-	if user_instance is None:
-		return render_template("login.html", alert_title="Error: ", error="User login was invalid")
-
-	#only displaying if user exists...
-	#print 'user_instance', user_instance.user_id
-	contact_list = list(user_instance.user_contacts.all())
-	contact_list = sorted(contact_list, key=lambda c: c.contact_name)
-	#contact_dict = dict((c.contact_id, c) for c in contact_list)
-	
-	#render template w/ contacts, messages in dictionary form
-	return render_template("contacts_dashboard.html", 
-							username= user_instance.user_name, 
-							contacts = contact_list)
-
-@models.app.route('/user/messages')
-def show_message_list():
-	''' Show user profile of username, contacts, messages '''
-	#query db for user info
-	if "user_id" not in session.keys():
-		return render_template("login.html", alert_title="Error: ", error="Not logged in")
-
-	user_instance = models.User.query.filter_by(user_id=session["user_id"]).first()
-	#if user doesn't exist, route to signup page
-	if user_instance is None:
-		return render_template("login.html", alert_title="Error: ", error="User login session was invalid")
-
-	#only displaying if user exists...
-	#current user
-	current_user = models.User.query.filter_by(user_id=session["user_id"]).first() #a user name
-	current_contacts = current_user.user_contacts.all()
-	current_inmessages = current_user.user_inmessages.all()
-	current_outmessages = current_user.user_outmessages.all()
-
-	inmessages_list = list(user_instance.user_inmessages.all())
-	outmessages_list = list(user_instance.user_outmessages.all())
-
-	threads = set()
-
-	for message in inmessages_list:
-		threads.add(message.inmessage_contact_phone)
-	for message in outmessages_list:
-		threads.add(message.outmessage_contact_phone)
-
-	thread_phone_list = list(threads)
-
-	thread_name_dict = dict()
-	for thread_phone in thread_phone_list:
-		contact = models.Contact.query.filter_by(contact_phone1=thread_phone).first()
-		if contact:
-			thread_name_dict[thread_phone] = contact.contact_name
-		else:
-			thread_name_dict[thread_phone] = thread_phone
-
-	print thread_name_dict
-	
-	#render template w/ contacts, messages in dictionary form
-	return render_template("messages_dashboard.html", 
-							username= user_instance.user_name, 
-							thread_name_dict = thread_name_dict)
-
-@models.app.route('/user/message/<phone_number>')
-def show_message(phone_number):
-	#query db for user info
-	if "user_id" not in session.keys():
-		return render_template("login.html", alert_title="Error: ", error="Not logged in")
-
-	user_instance = models.User.query.filter_by(user_id=session["user_id"]).first()
-	#if user doesn't exist, route to signup page
-	if user_instance is None:
-		return render_template("login.html", alert_title="Error: ", error="User login session was invalid")
-
-	#only displaying if user exists...
-	#current user
-	current_user = models.User.query.filter_by(user_id=session["user_id"]).first() #a user name
-
-	inmessages_list = list(user_instance.user_inmessages.all())
-	outmessages_list = list(user_instance.user_outmessages.all())
-
-	thread_list= list()
-	correspondent_name = None
-	contact = models.Contact.query.filter_by(contact_phone1=phone_number).first()
-	if contact:
-		correspondent_name = contact.contact_name
-	else:
-		correspondent_name = phone_number
-
-	trid = None
-
-	for message in inmessages_list:
-		if message.inmessage_contact_phone == phone_number:
-			thread_list.append((correspondent_name, message.inmessage_content, message.inmessage_when_received))
-			trid = message.inmessage_thread_id
-
-	for message in outmessages_list:
-		if message.outmessage_contact_phone == phone_number:
-			thread_list.append((user_instance.user_name, message.outmessage_content, message.outmessage_when_sent))
-
-
-	sorted_thread_list = sorted(thread_list, key=lambda m: m[2])
-
-	
-	#render template w/ contacts, messages in dictionary form
-	return render_template("message_view.html", 
-							username = user_instance.user_name, 
-							correspondent_name = correspondent_name,
-							thread_list = sorted_thread_list,
-							phone = phone_number,
-							trid=trid)
-
-#TODO add trid
-@models.app.route('/user/send/<phone>/<trid>', methods=["GET", "POST"])
-def send_message(trid, phone):
-	if request.method == "POST":
-		current_user = models.User.query.filter_by(user_id = session["user_id"]).first()
-		msg = request.form['message']
-
-		# Your Account Sid and Auth Token from twilio.com/user/account
-		# Twilio stuff
-		account_sid = "AC135efa5813678821d410a3f1c2b6b4ea"
-		auth_token  = "4a13d969633f34fe7b8c3c789bba22af"
-		client = TwilioRestClient(account_sid, auth_token)
-		message = client.sms.messages.create(body="("+current_user.user_name+"): " + msg,
-										    to=str(phone),    # Replace with your phone number
-										    from_="+19177461939") # Replace with your Twilio number
-
-		out = models.OutMessage(phone, msg, int(trid), datetime.datetime.now())
-		models.db.session.add(out)
-		current_user.user_outmessages.append(out)
-		models.db.session.commit()
-
-		return redirect("/user/message/" + str(phone))
-
-	else: # request.method == "GET"
-		return redirect("/user/message/" + str(phone))
-
-#
 
 @models.app.errorhandler(404)
 def page_not_found(error):
