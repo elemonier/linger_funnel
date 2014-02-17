@@ -1,28 +1,29 @@
-from flask import Flask, jsonify, render_template, request, session, redirect, flash
+from flask import Flask, jsonify, render_template, request, session, redirect, flash, config
 
 
-# app = Flask(__name__)
+app = Flask(__name__)
+app.config.from_object('config.flask_config')
 app.debug = True
 
 
-@app.route("/contact/mail", methods=["GET", "POST"])
+@app.route("/signup", methods=["GET", "POST"])
 def mail():
 	if request.method == "POST":
 
 		url = "https://api.sendgrid.com/api/mail.send.json"
 		msg = {}
 
-		msg['api_user'] = "wfalkwallace"
-		msg['api_key'] = "wingit"
-		msg['to'] = "wfalkwallace@gmail.com"
-		msg['subject'] = "WING IT CONTACT"
+		msg['api_user'] = API_USER #move to config
+		msg['api_key'] = API_KEY
+		msg['to'] = "lingerio@googlegroups.com" #go to linger.io.googlegroups
+		msg['subject'] = "LINGER CONTACT"	#change to us.
 		msg['text'] = "name: " + request.form['name'] + \
 					"\nphone: " + request.form['phone'] + \
 					"\nemail: " + request.form['email'] + \
 					"\ncomments: " + request.form['comments']
 
-		msg['from'] = "support@wingitwith.us"
-		response = requests.post(url, msg)
+		msg['from'] = "lingerio@googlegroups.com"	#lingergoogle groups
+		response = requests.post(url, msg)	#error template
 
 		return redirect("/")
 	else:
@@ -48,7 +49,7 @@ def signup():
 
 
 
-@models.app.route("/signup-submit", methods=["GET", "POST"])
+@app.route("/signup-submit", methods=["GET", "POST"])
 def signup_submit():
 	#request_form...
 	if request.method == "POST":
@@ -74,12 +75,12 @@ def signup_submit():
 		return render_template("signup.html")
 
 
-@models.app.errorhandler(404)
+@app.errorhandler(404)
 def page_not_found(error):
 	return render_template("404.html"), 404
 
 
 if __name__ == "__main__":
-	models.app.run(host="0.0.0.0")
+	app.run(host="0.0.0.0")
 
 
