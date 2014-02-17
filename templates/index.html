@@ -34,7 +34,7 @@
       <strong>{{ alert_title }}</strong> {{ error }}
     </div>
     {% endif %}
-    
+
     <div class="row">
       <div class="col-md-8">
         <div class="well text-center">
@@ -53,19 +53,20 @@
           <form role="form" action="/signup" METHOD="POST">
             <div class="form-group">
               <label class="sr-only" for="contact-name">Name</label>
-              <input type="text" class="form-control" name="body" id="contact-name" placeholder="Name">
+              <input type="text" class="form-control" name="name" id="contact-name" placeholder="Name">
             </div>
             <div class="form-group">
               <label class="sr-only" for="contact-phone">Phone</label>
-              <input type="tel" class="form-control" name="body" id="contact-phone" placeholder="Phone" required>
+              <input type="tel" class="form-control" name="phone" id="contact-phone" placeholder="Phone" required>
             </div>
             <div class="form-group">
               <label class="sr-only" for="contact-email">Email*</label>
-              <input type="email" class="form-control" id="contact-email" placeholder="Email*" required>
+              <input type="email" class="form-control" id="email" placeholder="Email*" required>
             </div>
             <div class="form-group">
               <label class="sr-only" for="contact-comments">Comments</label>
-              <textarea id="contact-comments" name="body" placeholder="Comments" class="form-control" rows="3"></textarea>
+              <textarea id="contact-comments" name="com
+              ments" placeholder="Comments" class="form-control" rows="3"></textarea>
             </div>
             <div class="btn-group widen">
               <button type="submit" class="btn btn-green widen">Submit</button>
