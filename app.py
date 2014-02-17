@@ -1,12 +1,15 @@
 from flask import Flask, jsonify, render_template, request, session, redirect, flash, config
+#from config import API_USER, API_KEY
 
+API_USER = 'wfalkwallace'
+API_KEY = 'wingit'
 
 app = Flask(__name__)
 app.config.from_object('config.flask_config')
 app.debug = True
 
 
-@app.route("/signup", methods=["GET", "POST"])
+@app.route("/index", methods=["GET", "POST"])
 def mail():
 	if request.method == "POST":
 
