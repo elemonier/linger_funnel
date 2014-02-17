@@ -2,7 +2,6 @@ from flask import Flask, jsonify, render_template, request, session, redirect, f
 
 
 app = Flask(__name__)
-app.config.from_object('config.flask_config')
 app.debug = True
 
 
