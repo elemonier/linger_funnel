@@ -7,10 +7,7 @@ app.debug = True
 
 @app.route("/index", methods=["GET", "POST"])
 def signup():
-	if request.method == 'GET':	
-		print 'IN MAIL 1'
 	if request.method == "POST":
-		print 'IN MAIL 2'
 		url = "https://api.sendgrid.com/api/mail.send.json"
 		msg = {}
 
@@ -48,11 +45,6 @@ def mail():
 		url = "https://api.sendgrid.com/api/mail.send.json"
 		msg = {}
 
-		print request.form['name']
-		print request.form['phone']
-		print request.form['email']
-		print request.form['comments']
-
 		msg['api_user'] = API_USER
 		msg['api_key'] = API_KEY
 		msg['to'] = "lingerio@googlegroups.com" 
@@ -61,13 +53,9 @@ def mail():
 					"\nphone: " + request.form['phone'] + \
 					"\nemail: " + request.form['email'] + \
 					"\ncomments: " + request.form['comments']
-		print 'here 2'
-		print 'before post 1'
-		msg['from'] = "lingerio@googlegroups.com"
-		print 'before post'
-		response = requests.post(url, msg)	#error template
 
-		print 'SIGNUP EMAIL SENT'
+		msg['from'] = "lingerio@googlegroups.com"
+		response = requests.post(url, msg)	#error template
 		return redirect("/")
 	else:
 		return redirect("/")
